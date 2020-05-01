@@ -2,11 +2,10 @@ import React, { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSuitcaseRolling } from '@fortawesome/free-solid-svg-icons';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
-import { BrowserRouter, Route, Link } from "react-router-dom";
 
 const MenuItemComp = () => (
     <Fragment>
-        <Navbar bg="dark" expand="lg" variant="dark">
+        <Navbar bg="dark" expand="md" variant="dark">
             <Navbar.Brand href="/"><FontAwesomeIcon icon={faSuitcaseRolling} size="2x" /></Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
