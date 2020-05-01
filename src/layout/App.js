@@ -1,9 +1,10 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import MenuPrincipal from './layout/MenuPrincipal';
+import '../css/App.css';
+import MenuPrincipal from './MenuPrincipal';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import NotFound from './layout/NotFound';
-import IngresoSimulado from './layout/IngresoSimulado';
+import NotFound from './NotFound';
+import IngresoSimulado from './IngresoSimulado';
 
 const App = () => (
     <BrowserRouter>   

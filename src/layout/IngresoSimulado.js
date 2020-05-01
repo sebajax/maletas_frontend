@@ -32,7 +32,7 @@ const IngresoSimulado = () => {
                     <Form noValidate validated={validated} onSubmit={handleSubmit}>
                         <Form.Group as={Row} controlId="fecha">
                             <Form.Label column sm={2}>Fecha</Form.Label>
-                            <Col sm={10}>
+                            <Col sm={6}>
                                 <DatePickerComp required setStartDate={setStartDate} startDate={startDate} />
                                 <Form.Control.Feedback type="invalid">Debe ingresar una fecha valida.</Form.Control.Feedback>
                             </Col>
