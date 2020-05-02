@@ -5,6 +5,7 @@ import MenuPrincipal from './MenuPrincipal';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import NotFound from './NotFound';
 import IngresoSimulado from './IngresoSimulado';
+import GastoSimulado from './GastoSimulado';
 
 const App = () => (
     <BrowserRouter>   
@@ -17,6 +18,9 @@ const App = () => (
             </Route> 
             <Route exact path="/IngresoSimulado">
                 <IngresoSimulado />
+            </Route> 
+            <Route exact path="/GastoSimulado">
+                <GastoSimulado />
             </Route> 
             <Route path="*">
                 <NotFound />

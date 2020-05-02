@@ -1,30 +1,26 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import MenuItemComp from '../componenets/MenuItemsComp';
 import FormButtonsComp from '../componenets/FormButtonsComp';
 import { Container, Form, Col, Row, InputGroup } from 'react-bootstrap';
 import BreadCrumbComp from '../componenets/BreadCrumbComp';
 import MontoTotalComp from '../componenets/MontoTotalComp';
 import DatePickerComp from '../componenets/DatePickerComp';
-import { useForm, Controller } from "react-hook-form";
 
-const IngresoSimulado = () => {
+const GastoSimulado = () => {
     
     const [startDate, setStartDate] = useState(new Date());
-    let title = "Ingreso Simulado";
+    const [validated, setValidated] = useState(false);
+    let title = "Gasto Simulado";
     let navItems = ["Menu Simulado", title];
 
-    const { register, handleSubmit, errors, control } = useForm({
-        mode: 'onChange',
-    });
-
-    const onSubmit = data => {
-        //data.fecha = startDate;
-        console.log(data);
-    }
-    const handleChange = (newStartDate) => {
-        console.log(newStartDate);
-        setStartDate(newStartDate);
-    }
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        setValidated(true);
+    };
 
     return (
         <Fragment>
@@ -32,19 +28,19 @@ const IngresoSimulado = () => {
             <Container>
                 <BreadCrumbComp navItems={navItems} />
                 <h3 className="text-primary mb-4">{title}</h3>
-                <Form noValidate onSubmit={handleSubmit(onSubmit)}>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group as={Row} controlId="fecha">
                         <Form.Label column sm={2}>Fecha</Form.Label>
                         <Col sm={6}>
-                            <Controller defaultValue="" startDate={startDate} handleChange={handleChange} control={control} name="fecha" as={<DatePickerComp />} />
-                            {errors.fecha && "Debe ingresar una fecha valida."}
+                            <DatePickerComp required setStartDate={setStartDate} startDate={startDate} />
+                            <Form.Control.Feedback type="invalid">Debe ingresar una fecha valida.</Form.Control.Feedback>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="categoria">
                         <Form.Label column sm={2}>Categoria</Form.Label>
                         <Col sm={6}>
-                            <Form.Control name="categoria" required type="text" placeholder="Categoria de ingreso" ref={register({ required: true })} />
-                            {errors.categoria && "Debe ingresar una categoria valida."}
+                            <Form.Control required type="text" placeholder="Categoria de gasto" />
+                            <Form.Control.Feedback type="invalid">Debe ingresar una categoria valida.</Form.Control.Feedback>
                         </Col>
                     </Form.Group>                       
                     <Form.Group as={Row} controlId="monto">
@@ -54,9 +50,9 @@ const IngresoSimulado = () => {
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="monto_addon">$</InputGroup.Text>
                                 </InputGroup.Prepend>
-                                <Form.Control name="monto" required type="text" placeholder="Monto" ref={register({ required: true })} />
+                                <Form.Control required type="text" placeholder="Monto" />
+                                <Form.Control.Feedback type="invalid">Debe ingresar un monto valido.</Form.Control.Feedback>
                             </InputGroup>
-                            {errors.monto && "Debe ingresar un monto valida."}
                         </Col>
                     </Form.Group>    
                     <FormButtonsComp />                    
@@ -67,4 +63,4 @@ const IngresoSimulado = () => {
     );
 }
 
-export default IngresoSimulado;
+export default GastoSimulado;

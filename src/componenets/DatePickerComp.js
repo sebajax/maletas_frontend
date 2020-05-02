@@ -7,13 +7,13 @@ import es from 'date-fns/locale/es';
 registerLocale('es', es);
 
 const DatePickerComp = (props) => (
-    <DatePicker 
-        locale="es" 
-        selected={props.startDate} 
-        onChange={date => props.setStartDate(date)} 
-        dateFormat="dd MMMM, yyyy"    
-        className="form-control"
-    />
+        <DatePicker 
+            locale="es" 
+            selected={props.startDate} 
+            onChange={date => props.handleChange(date)} 
+            dateFormat="yyyy-MM-dd"    
+            className="form-control"
+        />
 );
 
 export default DatePickerComp;

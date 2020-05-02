@@ -5,10 +5,10 @@ import { faLuggageCart } from '@fortawesome/free-solid-svg-icons';
 import MenuItemComp from '../componenets/MenuItemsComp';
 
 const MenuPrincipal = () => (
-    <Fragment>
-        <MenuItemComp />
+  <Fragment>
+        <MenuItemComp eventKey={0} />
         <Container id="container" className="p-2">
-            <div className="d-flex justify-content-center" style={{paddingTop: "70px", fontSize: "34px"}}>
+            <div className="d-flex justify-content-center text-primary" style={{paddingTop: "70px", fontSize: "34px"}}>
                 <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faLuggageCart} size="10x" /></span> 
             </div>
         </Container>
