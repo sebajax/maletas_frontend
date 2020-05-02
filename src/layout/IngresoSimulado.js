@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import MenuItemComp from '../componenets/MenuItemsComp';
 import FormButtonsComp from '../componenets/FormButtonsComp';
 import { Container, Form, Col, Row, InputGroup } from 'react-bootstrap';
@@ -6,25 +6,29 @@ import BreadCrumbComp from '../componenets/BreadCrumbComp';
 import MontoTotalComp from '../componenets/MontoTotalComp';
 import DatePickerComp from '../componenets/DatePickerComp';
 import { useForm, Controller } from "react-hook-form";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 const IngresoSimulado = () => {
     
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(null);
     let title = "Ingreso Simulado";
     let navItems = ["Menu Simulado", title];
 
-    const { register, handleSubmit, errors, control } = useForm({
+    const { register, handleSubmit, errors, setValue, control } = useForm({
         mode: 'onChange',
     });
 
     const onSubmit = data => {
-        //data.fecha = startDate;
         console.log(data);
     }
     const handleChange = (newStartDate) => {
-        console.log(newStartDate);
         setStartDate(newStartDate);
     }
+
+    useEffect(() => {
+        setValue("fecha", startDate);
+    });    
 
     return (
         <Fragment>
@@ -36,8 +40,13 @@ const IngresoSimulado = () => {
                     <Form.Group as={Row} controlId="fecha">
                         <Form.Label column sm={2}>Fecha</Form.Label>
                         <Col sm={6}>
-                            <Controller defaultValue="" startDate={startDate} handleChange={handleChange} control={control} name="fecha" as={<DatePickerComp />} />
-                            {errors.fecha && "Debe ingresar una fecha valida."}
+                            <Controller
+                                rules={{ required: true }}
+                                name="fecha"
+                                control={control}  
+                                as={<DatePickerComp startDate={startDate} handleChange={handleChange}  />}        
+                            />
+                            <div className="text-danger"><FontAwesomeIcon icon={faExclamationCircle} /> {errors.fecha && "Debe ingresar una fecha valida."}</div>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="categoria">
