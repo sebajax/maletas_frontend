@@ -6,14 +6,31 @@ import es from 'date-fns/locale/es';
 
 registerLocale('es', es);
 
-const DatePickerComp = (props) => (
+const DatePickerComp = (props) => {
+
+    let formatDateHandleChange = (date) => {
+        let formatDate = "";
+        if(date) {
+            formatDate =
+                date.getFullYear() +
+                "-" +
+                (date.getMonth() + 1) +
+                "-" +
+                date.getDate();       
+        }
+        props.handleChange(date, formatDate);
+    };
+
+    return (
         <DatePicker 
             locale="es" 
-            selected={props.startDate} 
-            onChange={date => props.handleChange(date)} 
-            dateFormat="yyyy-MM-dd"    
+            selected={props.startDate}
+            onChange={date => formatDateHandleChange(date)} 
+            dateFormat="yyyy-MM-dd"
             className="form-control"
+            placeholderText="Seleccione fecha"
         />
-);
+    );
+}
 
 export default DatePickerComp;

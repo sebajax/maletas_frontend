@@ -1,11 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/App.css';
-import MenuPrincipal from './MenuPrincipal';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import NotFound from './NotFound';
+//START: import front layout component
+import MenuPrincipal from './MenuPrincipal';
 import IngresoSimulado from './IngresoSimulado';
 import GastoSimulado from './GastoSimulado';
+import NotFound from './NotFound';
+//END: import front layout component
 
 const App = () => (
     <BrowserRouter>   

@@ -2,7 +2,9 @@ import React, { Fragment } from 'react';
 import { Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLuggageCart } from '@fortawesome/free-solid-svg-icons';
+//START: import front component
 import MenuItemComp from '../componenets/MenuItemsComp';
+//END: import front component
 
 const MenuPrincipal = () => (
   <Fragment>
