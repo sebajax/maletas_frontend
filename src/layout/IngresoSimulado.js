@@ -1,48 +1,90 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { Container, Form, Col, Row, InputGroup } from 'react-bootstrap';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import { Container, Form, Col, Row, InputGroup, Alert } from 'react-bootstrap';
 import { useForm, Controller } from "react-hook-form";
+import axios from 'axios';
+import url from '../config/Config';
+import Validate from 'validate.js';
 //START: import front component
-import BreadCrumbComp from '../componenets/BreadCrumbComp';
-import MontoTotalComp from '../componenets/MontoTotalComp';
-import DatePickerComp from '../componenets/DatePickerComp';
-import MenuItemComp from '../componenets/MenuItemsComp';
-import FormButtonsComp from '../componenets/FormButtonsComp';
-import ErrorMessage from '../componenets/ErrorMessage';
+import BreadCrumbComp from '../components/BreadCrumbComp';
+import MontoTotalComp from '../components/MontoTotalComp';
+import DatePickerComp from '../components/DatePickerComp';
+import MenuItemComp from '../components/MenuItemsComp';
+import FormButtonsComp from '../components/FormButtonsComp';
+import ErrorMessage from '../components/ErrorMessage';
 //END: import front component
 
 const IngresoSimulado = () => {
     
+    //INI: States
     const [startDate, setStartDate] = useState(null);
+    const [validate, setValidate] = useState({ 
+        valid: false,
+        message: '', 
+        variant: '',
+    });
+    const [amount, setAmount] = useState(0);
+    //END: States
+
     let title = "Ingreso Simulado";
     let navItems = ["Menu Simulado", title];
-    let dateReg = /^\d{4}[./-]\d{1,2}[./-]\d{1,2}$/
-
+    
     const { register, handleSubmit, errors, setValue, control, reset } = useForm({
         mode: 'onChange',
     });
 
+    const initValidate = (valid = false, message = "", variant = "danger") => {
+        setValidate({
+            valid: valid,
+            message: message, 
+            variant: variant
+        });
+    }
+
     const onSubmit = (data, e) => {
-        console.log(data);
-        e.target.reset();
-        setStartDate(null);
+        e.preventDefault();
+        data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
+        axios.post(`${url}/ingresoSimulado`, {data})
+            .then(res => {
+                e.target.reset();
+                setStartDate(null);
+                initValidate(true, `Monto agregado al total: ${res.data.monto}`, 'success');
+                getAmounts();
+                setTimeout(() => {
+                    initValidate();
+                }, 3000);
+            })
+            .catch(function (err) {
+                initValidate(true, `Hubo un error al procesar la solicitud verifique`);
+                console.log(err);
+            });
     }
     
-    const handleChange = (newStartDate, newStartDateFormatted) => {
-        if (newStartDate) {
-            if(newStartDateFormatted.toString().match(dateReg))
-                errors.fecha = ""; 
-            else
-                errors.fecha = true; 
+    const handleChange = (newStartDate) => {
+        if (Validate.isDefined(newStartDate)) {
+            errors.fecha = (Validate.isDate(newStartDate) ? false : true );
         }else 
             errors.fecha = true; 
+        
+        setValue("fecha", newStartDate);
         setStartDate(newStartDate);
     }
 
+    const getAmounts = useCallback(() => {
+        axios.get(`${url}/ingresoSimulado/getAmounts`)
+        .then(res => {
+            console.log(res.data.monto);
+            if(res.data.monto)
+                setAmount(res.data.monto);
+        })
+        .catch(err => {
+            initValidate(true, `Hubo un error al procesar la solicitud verifique`);
+            console.log(err);
+        });
+    }, []);
+
     useEffect(() => {
-        setValue("fecha", startDate);
-    }, 
-        [startDate, setValue]
-    );
+        getAmounts();
+    }, [getAmounts]);
 
     return (
         <Fragment>
@@ -50,6 +92,7 @@ const IngresoSimulado = () => {
             <Container>
                 <BreadCrumbComp navItems={navItems} />
                 <h3 className="text-primary mb-4">{title}</h3>
+                {validate.valid && <Alert variant={validate.variant} onClose={() => initValidate()} dismissible> {validate.message} </Alert>}
                 <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Form.Group as={Row} controlId="fecha">
                         <Form.Label column sm={2}>Fecha</Form.Label>
@@ -90,7 +133,7 @@ const IngresoSimulado = () => {
                                     ref={register({ 
                                         required: true, 
                                         validate: {
-                                            positiveNumber: value => parseFloat(value) > 0
+                                            number: value => Validate.isNumber(parseFloat(value))
                                         } 
                                     })} 
                                 />
@@ -98,9 +141,9 @@ const IngresoSimulado = () => {
                             {errors.monto && <ErrorMessage message={"Debe ingresar un monto valida."} />}
                         </Col>
                     </Form.Group>    
-                    <FormButtonsComp reset={reset} />                    
+                    <FormButtonsComp reset={reset} />               
                 </Form>
-                <MontoTotalComp monto={10000} />
+                <MontoTotalComp monto={amount} />
             </Container>
         </Fragment>
     );
