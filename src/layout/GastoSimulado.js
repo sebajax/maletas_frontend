@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import axios from 'axios';
 import url from '../config/Config';
 //START: import front component
-import BreadCrumbComp from '../components/BreadCrumbComp';
+import HeaderComp from '../components/HeaderComp';
 import MontoTotalComp from '../components/MontoTotalComp';
 import DatePickerComp from '../components/DatePickerComp';
 import MenuItemComp from '../components/MenuItemsComp';
@@ -90,7 +90,7 @@ const GastoSimulado = () => {
         <Fragment>
             <MenuItemComp eventKey={1} />
             <Container>
-                <BreadCrumbComp navItems={navItems} />
+                <HeaderComp navItems={navItems} />
                 <h3 className="text-primary mb-4">{title}</h3>
                 {validate.valid && <Alert variant="success" onClose={() => initValidate()} dismissible> {validate.message} </Alert>}
                 <Form noValidate onSubmit={handleSubmit(onSubmit)}>
