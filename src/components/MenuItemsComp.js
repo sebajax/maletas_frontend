@@ -16,7 +16,7 @@ const MenuItemComp = (props) => (
                         <NavDropdown.Item id="IngresoSimulado" href="/IngresoSimulado"> Ingreso Simulado </NavDropdown.Item>
                         <NavDropdown.Item id="GastoSimulado" href="/GastoSimulado"> Gasto Simulado </NavDropdown.Item>
                         <NavDropdown.Item id="ConsultaSimulado"> Consulta Simulado </NavDropdown.Item>
-                    </NavDropdown>                                      
+                    </NavDropdown>                                    
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

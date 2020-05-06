@@ -1,24 +1,36 @@
-import React, { Fragment, useState, useEffect } from 'react';
+/*
+* Node Modules imports
+*/
+import React, { Fragment, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Container, Form, Col, Row, InputGroup } from 'react-bootstrap';
 import { useForm, Controller } from "react-hook-form";
-import axios from 'axios';
-import url from '../config/Config';
+import API from '../config/API';
+import config from '../config/Config';
 import Validate from 'validate.js';
-//START: import front component
+
+/*
+* REDUX Actions imports
+*/
+import { setMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
+import { setValidateMessage } from '../redux/actions/HeaderActions';
+
+/*
+* COMPONENT imports
+*/
 import HeaderComp from '../components/HeaderComp';
-import MontoTotalComp from '../components/MontoTotalComp';
+import MontoTotalSimuladoComp from '../components/MontoTotalSimuladoComp';
 import DatePickerComp from '../components/DatePickerComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
 import ErrorMessage from '../components/ErrorMessage';
-//END: import front component
 
-const IngresoSimulado = (props) => {
+const IngresoSimulado = () => {
     
     //INI: States
+    const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(null);
-    const [monto, setMonto] = useState();
-
+    
     let title = "Ingreso Simulado";
     let navItems = ["Menu Simulado", title];
     //END: States
@@ -30,19 +42,18 @@ const IngresoSimulado = (props) => {
     const onSubmit = (data, e) => {
         e.preventDefault();
         data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
-        axios.post(`${url}/ingresoSimulado`, {data})
+        API.post(config.URL_API_INGRESO_SIMULADO, {data})
             .then(res => {
                 e.target.reset();
-                setMonto(updateMonto());
+                dispatch(setMontoTotalSimulado(res.data.monto));
                 setStartDate(null);
-                props.initValidate(true, `Monto agregado al total: ${res.data.monto}`, 'success');
+                dispatch(setValidateMessage(true, `Monto agregado al total: ${res.data.monto}`, 'success'));
                 setTimeout(() => {
-                    props.initValidate();
+                    dispatch(setValidateMessage());
                 }, 3000);
             })
             .catch(function (err) {
-                props.initValidate(true, `Hubo un error al procesar la solicitud verifique`);
-                console.log(err);
+                dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
             });
     }
 
@@ -56,29 +67,13 @@ const IngresoSimulado = (props) => {
         setStartDate(newStartDate);
     }
 
-    const updateMonto = () => {
-        axios.get(`${url}/ingresoSimulado/getAmounts`)
-        .then(res => {
-            if(res.data.monto)
-                setMonto(res.data.monto);
-        })
-        .catch(err => {
-            props.initValidate(true, `Hubo un error al procesar la solicitud verifique`);
-            console.log(err);
-        });
-    }
-
-    useEffect(() => {}, []);   
-
     return (
         <Fragment>
             <MenuItemComp eventKey={1} />
             <Container>
                 <HeaderComp 
                     navItems={navItems} 
-                    validate={props.validate}
                     title={title}
-                    initValidate={props.initValidate}
                 />
                 <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Form.Group as={Row} controlId="fecha">
@@ -130,7 +125,7 @@ const IngresoSimulado = (props) => {
                     </Form.Group>    
                     <FormButtonsComp reset={reset} />               
                 </Form>
-                <MontoTotalComp monto={monto}/>
+                <MontoTotalSimuladoComp />
             </Container>
         </Fragment>
     );

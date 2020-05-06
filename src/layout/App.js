@@ -1,57 +1,57 @@
-import React, {useState, useEffect} from 'react';
+/*
+* Node Modules imports
+*/
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/App.css';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import axios from 'axios';
-import url from '../config/Config';
-//START: import front layout component
+import API from '../config/API';
+import config from '../config/Config';
+
+/*
+* REDUX Actions imports
+*/
+import { setValidateMessage } from '../redux/actions/HeaderActions';
+
+/*
+* COMPONENT-LAYOUT imports
+*/
 import MenuPrincipal from './MenuPrincipal';
 import IngresoSimulado from './IngresoSimulado';
 import GastoSimulado from './GastoSimulado';
 import NotFound from './NotFound';
-//END: import front layout component
 
 const App = () => {
 
-    const [validate, setValidate] = useState({});
-
-    const initValidate = (valid = false, message = "", variant = "danger") => {
-        setValidate({
-            valid: valid,
-            message: message, 
-            variant: variant
-        });
-    }
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        axios.get(`${url}/`)
+        API.get(config.URL)
         .then(res => {
             console.log(res);
             if(res.status === 200)
-                initValidate(false, ``, 'success');
+                dispatch(setValidateMessage(false, ``, 'success'));
         })
         .catch(err => {
             console.log(err);
-            initValidate(true, `${err} (No es posible conectarse al servidor)`);
+            dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`));
         });        
-    }, []);      
+    }, [dispatch]);      
 
     return(
         <BrowserRouter>   
             <Switch>
-                <Route exact path="/MenuPrincipal">
-                    <MenuPrincipal />
-                </Route>    
                 <Route exact path="/">
                     <MenuPrincipal />
+                </Route>             
+                <Route exact path={config.URL_MENU_PRINCIPAL}>
+                    <MenuPrincipal />
+                </Route>    
+                <Route exact path={config.URL_INGRESO_SIMULADO}>
+                    <IngresoSimulado />
                 </Route> 
-                <Route exact path="/IngresoSimulado">
-                    <IngresoSimulado 
-                        initValidate={initValidate}
-                        validate={validate}
-                    />
-                </Route> 
-                <Route exact path="/GastoSimulado">
+                <Route exact path={config.URL_GASTO_SIMULADO}>
                     <GastoSimulado />
                 </Route> 
                 <Route path="*">
