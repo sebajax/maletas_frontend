@@ -1,4 +1,4 @@
-import { SET_VALIDATE_MESSAGE } from '../actions/types/HeaderTypes';
+import { SET_VALIDATE_MESSAGE } from '../types/HeaderTypes';
 
 const HeaderReducer = (state = {}, action) => {
     switch(action.type) {

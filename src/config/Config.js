@@ -10,11 +10,11 @@ const URL_GASTO_SIMULADO = '/GastoSimulado';
     CONST URL API
 */
 const URL_API = 'http://localhost:5000/';
+//const URL_API = 'http://192.168.1.95:5000/';
 const URL_API_GET_AMOUNTS = `${URL_API}ingresoSimulado/getAmounts/`;
 const URL_API_INGRESO_SIMULADO = `${URL_API}ingresoSimulado/`;
 
 const SERVER_ERR_COM = "ERROR de comunicacion con servidor";
-
 
 const config = {
     URL,
@@ -25,6 +25,6 @@ const config = {
     URL_API_GET_AMOUNTS,
     URL_API_INGRESO_SIMULADO,
     SERVER_ERR_COM
-}
+};
 
 export default config;

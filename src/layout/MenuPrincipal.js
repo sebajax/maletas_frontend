@@ -9,6 +9,7 @@ import { faLuggageCart } from '@fortawesome/free-solid-svg-icons';
 /*
 * COMPONENT imports
 */
+import VersionComp from '../components/VersionComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import HeaderComp from '../components/HeaderComp';
 
@@ -20,6 +21,7 @@ const MenuPrincipal = () => (
             <div className="d-flex justify-content-center text-primary" style={{paddingTop: "70px", fontSize: "34px"}}>
                 <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faLuggageCart} size="10x" /></span> 
             </div>
+            <VersionComp />
         </Container>
     </Fragment>
 );

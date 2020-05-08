@@ -4,8 +4,4 @@
     width: 100%;
     /* to make it exactly the same height as the bootstrap input-group-addons */
     display: inline;
-}
-
-.breadcrumb {
-    background-color: lightgrey;
-}
+};

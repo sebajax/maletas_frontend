@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Breadcrumb, Alert} from 'react-bootstrap';
+import { Alert, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import Validate from 'validate.js';
@@ -8,17 +8,19 @@ const HeaderComp = (props) => {
     
     const dispatch = useDispatch();
     let validate = useSelector(state => state.HeaderReducer);
+    let theme = useSelector(state => state.ThemeReducer);
     let navItems = (Validate.isDefined(props.navItems)) ? true : false; 
     let title = (Validate.isDefined(props.title)) ? true : false; 
     let listItems = "";
+    let item = "";
     
     if(navItems) {
         listItems = props.navItems.map((navItem, index) => {
-            if((index+1) === props.navItems.length) {
-                return <Breadcrumb.Item active key={navItem.toString()}>{navItem}</Breadcrumb.Item>
-            }else {
-                return <Breadcrumb.Item href="/" key={navItem.toString()}>{navItem}</Breadcrumb.Item>
-            }
+            if((index+1) === props.navItems.length) 
+                item = `\xa0 ${navItem.toString()}`;
+            else 
+            item = `\xa0 ${navItem.toString()} /`;
+            return <Form.Label className={theme.style.breadCrumb} key={navItem.toString()}>{item}</Form.Label>
         });
     }
 
@@ -26,9 +28,9 @@ const HeaderComp = (props) => {
         <Fragment>
             {navItems 
                 ?
-                    <Breadcrumb>
+                    <Alert variant={theme.style.bg}>
                         {listItems}
-                    </Breadcrumb>
+                    </Alert>
                 :
                     ""
             }

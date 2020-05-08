@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/App.css';
+import '../css/App.css'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import API from '../config/API';
 import config from '../config/Config';
@@ -27,7 +27,7 @@ const App = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        API.get(config.URL)
+        API.get(config.URL_API)
         .then(res => {
             console.log(res);
             if(res.status === 200)
