@@ -21,14 +21,18 @@ const MontoTotalSimuladoComp = () => {
     let variant = (monto <= 0) ? "danger" : (theme.theme) ? "success" : "primary";
    
     useEffect(() => {
-        API.get(config.URL_API_GET_AMOUNTS)
+        API.get(config.URL_API_GET_AMOUNTS, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('jwtToken')}`
+            }
+        })
         .then(res => {
             if(res.data.monto)
                 dispatch(initMontoTotalSimulado(res.data.monto));
         })
         .catch(err => {
             dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`)); 
-        });  
+        });
     }, [dispatch]);
 
     return (

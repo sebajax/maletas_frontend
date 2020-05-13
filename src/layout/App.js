@@ -17,6 +17,7 @@ import { setValidateMessage } from '../redux/actions/HeaderActions';
 /*
 * COMPONENT-LAYOUT imports
 */
+import Login from './Login';
 import MenuPrincipal from './MenuPrincipal';
 import IngresoSimulado from './IngresoSimulado';
 import GastoSimulado from './GastoSimulado';
@@ -43,14 +44,14 @@ const App = () => {
         <BrowserRouter>   
             <Switch>
                 <Route exact path="/">
+                    <Login />
+                </Route>            
+                {sessionStorage.getItem('jwtToken') && <Route exact path={config.URL_MENU_PRINCIPAL}>
                     <MenuPrincipal />
-                </Route>             
-                <Route exact path={config.URL_MENU_PRINCIPAL}>
-                    <MenuPrincipal />
-                </Route>    
-                <Route exact path={config.URL_INGRESO_SIMULADO}>
+                </Route>}
+                {sessionStorage.getItem('jwtToken') && <Route exact path={config.URL_INGRESO_SIMULADO}>
                     <IngresoSimulado />
-                </Route> 
+                </Route>}
                 <Route exact path={config.URL_GASTO_SIMULADO}>
                     <GastoSimulado />
                 </Route> 

@@ -42,7 +42,11 @@ const IngresoSimulado = () => {
     const onSubmit = (data, e) => {
         e.preventDefault();
         data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
-        API.post(config.URL_API_INGRESO_SIMULADO, {data})
+        API.post(config.URL_API_INGRESO_SIMULADO, {data}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem('jwtToken')}`
+            }
+        })
             .then(res => {
                 e.target.reset();
                 dispatch(setMontoTotalSimulado(res.data.monto));

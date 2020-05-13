@@ -14,7 +14,7 @@ import MenuItemComp from '../components/MenuItemsComp';
 import HeaderComp from '../components/HeaderComp';
 
 const MenuPrincipal = () => (
-  <Fragment>
+    <Fragment>
         <MenuItemComp eventKey={0} />
         <HeaderComp />
         <Container id="container" className="p-2">

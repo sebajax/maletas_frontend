@@ -19,5 +19,5 @@ const https = require('https');
     maxRedirects: 10,
     
     //cap the maximum content length we'll accept to 50MBs, just in case
-      maxContentLength: 50 * 1000 * 1000
+    maxContentLength: 50 * 1000 * 1000
 });
