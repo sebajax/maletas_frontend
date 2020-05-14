@@ -8,6 +8,7 @@ import '../css/App.css'
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import API from '../config/API';
 import config from '../config/Config';
+import Cookies from 'universal-cookie';
 
 /*
 * REDUX Actions imports
@@ -25,6 +26,7 @@ import NotFound from './NotFound';
 
 const App = () => {
 
+    const cookies = new Cookies();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,15 +48,24 @@ const App = () => {
                 <Route exact path="/">
                     <Login />
                 </Route>            
-                {sessionStorage.getItem('jwtToken') && <Route exact path={config.URL_MENU_PRINCIPAL}>
-                    <MenuPrincipal />
-                </Route>}
-                {sessionStorage.getItem('jwtToken') && <Route exact path={config.URL_INGRESO_SIMULADO}>
-                    <IngresoSimulado />
-                </Route>}
-                <Route exact path={config.URL_GASTO_SIMULADO}>
-                    <GastoSimulado />
-                </Route> 
+                <Route 
+                    exact path={config.URL_MENU_PRINCIPAL}
+                    render={() => cookies.get('jwtToken') ?
+                        <MenuPrincipal /> : <NotFound />}
+                >
+                </Route>
+               <Route 
+                    exact path={config.URL_INGRESO_SIMULADO}
+                    render={() => cookies.get('jwtToken') ?
+                        <IngresoSimulado /> : <NotFound />}
+                >   
+                </Route>
+                <Route 
+                    exact path={config.URL_GASTO_SIMULADO}
+                    render={() => cookies.get('jwtToken') ?
+                        <GastoSimulado /> : <NotFound />}
+                >   
+                </Route>
                 <Route path="*">
                     <NotFound />
                 </Route>                 

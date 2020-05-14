@@ -12,6 +12,7 @@ import config from '../config/Config';
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { useHistory } from "react-router-dom";
 import version from '../config/Version';
+import Cookies from 'universal-cookie';
 /*
 * COMPONENT imports
 */
@@ -20,6 +21,7 @@ import ErrorMessage from '../components/ErrorMessage';
 
 const Login = () => {
 
+    const cookies = new Cookies();
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -37,8 +39,9 @@ const Login = () => {
                 }
             });
             if(response.data.auth && response.data.token) {
-                sessionStorage.setItem('jwtToken', response.data.token);
+                cookies.set('jwtToken', response.data.token, { path: '/' });
                 history.push(config.URL_MENU_PRINCIPAL);
+                dispatch(setValidateMessage());
             }else {
                 dispatch(setValidateMessage(true, `Datos de acceso incorrecto.`));
             }

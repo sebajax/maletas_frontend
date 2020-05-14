@@ -3,13 +3,13 @@
 */
 import React, { Fragment, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSuitcaseRolling, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faSuitcaseRolling, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Navbar, Nav, NavDropdown, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
 import config from '../config/Config';
-
+import Cookies from 'universal-cookie';
 /*
 * REDUX Actions imports
 */
@@ -19,12 +19,18 @@ import CambiarClaveModalComp from './CambiarClaveModalComp';
 
 const MenuItemComp = (props) => {
     
+    const cookies = new Cookies();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
   
     const dispatch = useDispatch();
     let theme = useSelector(state => state.ThemeReducer);
+
+    const handleSignOut = () => {
+        cookies.remove('jwtToken', '/');
+        window.location.href = '/';
+    };
 
     return (
         <Fragment>
@@ -64,6 +70,9 @@ const MenuItemComp = (props) => {
                             offstyle="outline-primary"
                             onChange={() => {dispatch(setTheme())}} 
                         />
+                        <Button variant="default" onClick={handleSignOut}>
+                            <FontAwesomeIcon className={theme.style.text} icon={faSignOutAlt} size="2x" />
+                        </Button>  
                     </Form>                  
                 </Navbar.Collapse>
             </Navbar>

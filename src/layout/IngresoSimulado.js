@@ -24,9 +24,12 @@ import DatePickerComp from '../components/DatePickerComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
 import ErrorMessage from '../components/ErrorMessage';
+import Cookies from 'universal-cookie';
 
 const IngresoSimulado = () => {
     
+    const cookies = new Cookies();
+
     //INI: States
     const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(null);
@@ -42,9 +45,9 @@ const IngresoSimulado = () => {
     const onSubmit = (data, e) => {
         e.preventDefault();
         data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
-        API.post(config.URL_API_INGRESO_SIMULADO, {data}, {
+        API.post(config.URL_API_SAVE_INGRESO_SIMULADO, {data}, {
             headers: {
-                Authorization: `Bearer ${sessionStorage.getItem('jwtToken')}`
+                Authorization: `Bearer ${cookies.get('jwtToken')}`
             }
         })
             .then(res => {
