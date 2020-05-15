@@ -7,29 +7,52 @@ import { faSuitcaseRolling, faUser, faSignOutAlt } from '@fortawesome/free-solid
 import { Navbar, Nav, NavDropdown, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import config from '../config/Config';
 import Cookies from 'universal-cookie';
+import API from '../config/API';
 /*
 * REDUX Actions imports
 */
-import { setTheme } from '../redux/actions/ThemeActions';
-
+import { changeTheme } from '../redux/actions/ThemeActions';
+import { setValidateMessage } from '../redux/actions/HeaderActions';
+/*
+* COMPONENT imports
+*/
 import CambiarClaveModalComp from './CambiarClaveModalComp';
 
 const MenuItemComp = (props) => {
     
+    const history = useHistory();
     const cookies = new Cookies();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
   
     const dispatch = useDispatch();
-    let theme = useSelector(state => state.ThemeReducer);
+    const theme = useSelector(state => state.ThemeReducer);
 
     const handleSignOut = () => {
         cookies.remove('jwtToken', '/');
-        window.location.href = '/';
+        sessionStorage.clear();
+        dispatch({type: 'USER_LOGGED_OUT'});
+        history.push('/');
+    };
+
+    const handleThemeChange = async () => {
+        let data = { 
+            "appTheme": (theme.theme) ? false : true,
+        };
+        try {
+            await API.put(config.URL_API_UPDATE_THEME+sessionStorage.getItem('userId'), {data}, {
+                headers: {
+                    Authorization: `Bearer ${cookies.get('jwtToken')}`
+                }
+            });
+            dispatch(changeTheme());
+        }catch(err) {
+            dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`)); 
+        };
     };
 
     return (
@@ -52,7 +75,7 @@ const MenuItemComp = (props) => {
                         placement="bottom"
                         overlay={
                             <Tooltip id="user_trigger">
-                                Usuario conectado <strong> COCO </strong>
+                                Usuario conectado <strong>{sessionStorage.getItem('user')}</strong>
                             </Tooltip>
                         }
                     >
@@ -68,7 +91,7 @@ const MenuItemComp = (props) => {
                             checked={theme.theme}
                             onstyle="outline-light" 
                             offstyle="outline-primary"
-                            onChange={() => {dispatch(setTheme())}} 
+                            onChange={handleThemeChange} 
                         />
                         <Button variant="default" onClick={handleSignOut}>
                             <FontAwesomeIcon className={theme.style.text} icon={faSignOutAlt} size="2x" />

@@ -7,7 +7,6 @@ import CurrencyFormat from 'react-currency-format';
 import { useSelector, useDispatch } from 'react-redux';
 import API from '../config/API';
 import config from '../config/Config';
-import Cookies from 'universal-cookie';
 
 /*
 * REDUX Actions imports
@@ -15,8 +14,7 @@ import Cookies from 'universal-cookie';
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { initMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
 
-const MontoTotalSimuladoComp = () => {
-    const cookies = new Cookies();
+const MontoTotalSimuladoComp = (props) => {
     const dispatch = useDispatch();
     let theme = useSelector(state => state.ThemeReducer);
     let monto = useSelector(state => state.MontoTotalSimuladoReducer);
@@ -25,7 +23,7 @@ const MontoTotalSimuladoComp = () => {
     useEffect(() => {
         API.get(config.URL_API_GET_MONTO_TOTAL_SIMULADO, {
             headers: {
-                Authorization: `Bearer ${cookies.get('jwtToken')}`
+                Authorization: `Bearer ${props.token}`
             }
         })
         .then(res => {
@@ -35,7 +33,7 @@ const MontoTotalSimuladoComp = () => {
         .catch(err => {
             dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`)); 
         });
-    }, [dispatch, cookies]);
+    }, [dispatch, props.token]);
 
     return (
         <Alert variant={variant}>

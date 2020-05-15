@@ -1,7 +1,14 @@
-import { SET_THEME } from '../types/ThemeTypes';
+import { SET_THEME, CHANGE_THEME } from '../types/ThemeTypes';
 
-export const setTheme = () => {
+export const setTheme = appTheme => {
     return {
-        type: SET_THEME
+        type: SET_THEME,
+        payload: appTheme
+    };
+};
+
+export const changeTheme = () => {
+    return {
+        type: CHANGE_THEME
     };
 };

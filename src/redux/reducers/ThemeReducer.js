@@ -1,4 +1,4 @@
-import { SET_THEME } from '../types/ThemeTypes';
+import { SET_THEME, CHANGE_THEME } from '../types/ThemeTypes';
 
 const blackTheme = {
     theme: false,
@@ -24,23 +24,26 @@ const blueTheme = {
     }
 };
 
-const themeSelector = state => {
-    switch(state.theme) {
+const themeSelector = theme => {
+    switch(theme) {
         case false: 
-            return blueTheme;
-        case true:
             return blackTheme;
+        case true:
+            return blueTheme;
         default:
     };
 };
 
 const ThemeReducer = (state = blackTheme, action) => {
     switch(action.type) {
+        case CHANGE_THEME: 
+            state = themeSelector(!state.theme);
+            return state;        
         case SET_THEME: 
-            state = themeSelector(state);
+            state = themeSelector(action.payload);
             return state;
         
-        default: 
+        default:
             return state;
     };
 };

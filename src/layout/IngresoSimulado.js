@@ -8,13 +8,11 @@ import { useForm, Controller } from "react-hook-form";
 import API from '../config/API';
 import config from '../config/Config';
 import Validate from 'validate.js';
-
 /*
 * REDUX Actions imports
 */
 import { setMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
 import { setValidateMessage } from '../redux/actions/HeaderActions';
-
 /*
 * COMPONENT imports
 */
@@ -42,27 +40,26 @@ const IngresoSimulado = () => {
         mode: 'onChange',
     });
 
-    const onSubmit = (data, e) => {
+    const onSubmit = async (data, e) => {
         e.preventDefault();
         data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
-        API.post(config.URL_API_SAVE_INGRESO_SIMULADO, {data}, {
-            headers: {
-                Authorization: `Bearer ${cookies.get('jwtToken')}`
-            }
-        })
-            .then(res => {
-                e.target.reset();
-                dispatch(setMontoTotalSimulado(res.data.monto));
-                setStartDate(null);
-                dispatch(setValidateMessage(true, `Monto agregado al total: ${res.data.monto}`, 'success'));
-                setTimeout(() => {
-                    dispatch(setValidateMessage());
-                }, 3000);
-            })
-            .catch(function (err) {
-                dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+        try {
+            const res = await API.post(config.URL_API_SAVE_INGRESO_SIMULADO, {data}, {
+                headers: {
+                    Authorization: `Bearer ${cookies.get('jwtToken')}`
+                }
             });
-    }
+            e.target.reset();
+            dispatch(setMontoTotalSimulado(res.data.monto));
+            setStartDate(null);
+            dispatch(setValidateMessage(true, `Monto agregado al total: ${res.data.monto}`, 'success'));
+            setTimeout(() => {
+                dispatch(setValidateMessage());
+            }, 3000);            
+        }catch(err) {    
+            dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+        };
+    };
 
     const handleChange = (newStartDate) => {
         if (Validate.isDefined(newStartDate)) 
@@ -132,7 +129,7 @@ const IngresoSimulado = () => {
                     </Form.Group>    
                     <FormButtonsComp reset={reset} />               
                 </Form>
-                <MontoTotalSimuladoComp />
+                <MontoTotalSimuladoComp token={cookies.get('jwtToken')} />
             </Container>
         </Fragment>
     );

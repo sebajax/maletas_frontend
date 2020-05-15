@@ -29,15 +29,20 @@ const App = () => {
     const cookies = new Cookies();
     const dispatch = useDispatch();
 
+    const isAuth = () => {
+        if(sessionStorage.getItem("auth") && cookies.get('jwtToken'))
+            return true;
+        else   
+            return false;
+    };
+
     useEffect(() => {
         API.get(config.URL_API)
         .then(res => {
-            console.log(res);
             if(res.status === 200)
                 dispatch(setValidateMessage(false, ``, 'success'));
         })
         .catch(err => {
-            console.log(err);
             dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`));
         });        
     }, [dispatch]);      
@@ -50,19 +55,19 @@ const App = () => {
                 </Route>            
                 <Route 
                     exact path={config.URL_MENU_PRINCIPAL}
-                    render={() => cookies.get('jwtToken') ?
+                    render={() => (isAuth()) ?
                         <MenuPrincipal /> : <NotFound />}
                 >
                 </Route>
                <Route 
                     exact path={config.URL_INGRESO_SIMULADO}
-                    render={() => cookies.get('jwtToken') ?
+                    render={() => (isAuth()) ?
                         <IngresoSimulado /> : <NotFound />}
                 >   
                 </Route>
                 <Route 
                     exact path={config.URL_GASTO_SIMULADO}
-                    render={() => cookies.get('jwtToken') ?
+                    render={() => (isAuth()) ?
                         <GastoSimulado /> : <NotFound />}
                 >   
                 </Route>

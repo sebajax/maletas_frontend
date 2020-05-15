@@ -6,7 +6,7 @@ const CambiarClaveModalComp = (props) => {
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title className="text-primary"> Cambiar Clave Usuario - xxx </Modal.Title>
+                <Modal.Title className="text-primary"> Cambiar Clave Usuario - {sessionStorage.getItem('user')} </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 Woohoo, you're reading this text in a modal!

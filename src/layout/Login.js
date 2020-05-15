@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import API from '../config/API';
 import config from '../config/Config';
 import { setValidateMessage } from '../redux/actions/HeaderActions';
+import { setTheme } from '../redux/actions/ThemeActions';
 import { useHistory } from "react-router-dom";
 import version from '../config/Version';
 import Cookies from 'universal-cookie';
@@ -38,10 +39,16 @@ const Login = () => {
                     password: data.password
                 }
             });
+            console.log(response.data);
             if(response.data.auth && response.data.token) {
                 cookies.set('jwtToken', response.data.token, { path: '/' });
-                history.push(config.URL_MENU_PRINCIPAL);
+                sessionStorage.setItem("auth", response.data.auth);
+                sessionStorage.setItem("userId", response.data.userId);
+                sessionStorage.setItem("user", response.data.user);
+                sessionStorage.setItem("permType", response.data.permType);
+                dispatch(setTheme(response.data.appTheme));
                 dispatch(setValidateMessage());
+                history.push(config.URL_MENU_PRINCIPAL);
             }else {
                 dispatch(setValidateMessage(true, `Datos de acceso incorrecto.`));
             }
