@@ -45,7 +45,7 @@ const App = () => {
         .catch(err => {
             dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`));
         });        
-    }, [dispatch]);      
+    }, [dispatch]);    
 
     return(
         <BrowserRouter>   

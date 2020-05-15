@@ -59,25 +59,23 @@ const Login = () => {
 
     return (
         <Fragment>
-            <Navbar className="justify-content-between" bg="primary" expand="md" variant="dark">
-                <Navbar.Brand className="text-white">
+            <Navbar className="justify-content-between" bg="dark" expand="md" variant="dark">
+                <Navbar.Brand className="text-primary">
                     <FontAwesomeIcon icon={faSuitcaseRolling} size="2x" />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Form inline>
-                    <h5 className="text-white">{version.APP} v{version.VERSION}</h5>
-                </Form>
             </Navbar>        
-            <Container id="container" className="my-5 w-50 h-auto">
+            <Container id="container" className="my-5 w-75">
                 <HeaderComp />
                 <Alert variant="primary">
+                    <Alert.Heading>Login</Alert.Heading> 
                     <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group controlId="loginUser">
                             <Form.Control 
                                 name="usuario"
                                 size="lg" 
                                 type="text" 
-                                placeholder="Ingrese usuario" 
+                                placeholder="Usuario" 
                                 ref={register({ required: true })} 
                             />
                             {errors.usuario && <ErrorMessage message={"Debe ingresar un usuario."} />}
@@ -93,13 +91,21 @@ const Login = () => {
                             />
                             {errors.password && <ErrorMessage message={"Debe ingresar un password."} />}
                         </Form.Group>
-                        <Button className="mt-2" size="lg" variant="primary" type="submit">Confirmar</Button>
+                        <hr />
+                        <Button className="mt-4" size="lg" variant="primary" type="submit" block>Confirmar</Button>
                     </Form>
+                    <br />
                 </Alert>
             </Container>
             <div className="d-flex justify-content-center text-primary">
                 <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faLuggageCart} size="3x" /></span> 
             </div>
+            <div className="d-flex justify-content-center text-primary">
+                <span style={{opacity: "0.1"}}>{version.APP}</span>
+            </div>
+            <div className="d-flex justify-content-center text-primary">
+                <span style={{opacity: "0.1"}}>v{version.VERSION}</span>
+            </div>            
         </Fragment>
     );
 };
