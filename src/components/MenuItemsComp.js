@@ -57,18 +57,24 @@ const MenuItemComp = (props) => {
 
     return (
         <Fragment>
-            <Navbar bg={theme.style.bg} expand="md" variant={theme.style.variant}>
+            <Navbar collapseOnSelect bg={theme.style.bg} expand="md" variant={theme.style.variant}>
                 <Navbar.Brand className={theme.style.text} as={Link} to={config.URL_MENU_PRINCIPAL}>
                     <FontAwesomeIcon icon={faSuitcaseRolling} size="2x" />
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="menu-items">
                     <Nav className="mr-auto">
                         <NavDropdown active={props.eventKey === 1 ? true : false} title="Simulacion" id="nav-dropdown-simulacion">
-                            <NavDropdown.Item id="IngresoSimulado" as={Link} to={config.URL_INGRESO_SIMULADO}>Ingreso Simulado</NavDropdown.Item>
+                            <NavDropdown.Item id="IngresoSimulado" as={Link} to={config.URL_INGRESO_SIMULADO}> Ingreso Simulado</NavDropdown.Item>
                             <NavDropdown.Item id="GastoSimulado"> Gasto Simulado </NavDropdown.Item>
                             <NavDropdown.Item id="ConsultaSimulado"> Consulta Simulado </NavDropdown.Item>
-                        </NavDropdown>                                    
+                        </NavDropdown>     
+                        <NavDropdown active={props.eventKey === 2 ? true : false} title="Admin" id="nav-dropdown-admin">
+                            <NavDropdown.Item id="CrearUsuario" as={Link} to={config.URL_CREAR_USUARIO}> Crear Usuario</NavDropdown.Item>
+                            <NavDropdown.Item id="ConsultaUsuarios" as={Link} to={config.URL_CONSULTA_USUARIOS}> Consulta Usuarios </NavDropdown.Item>
+                            <NavDropdown.Item id="AsignarPermisos"> Asignar Permisos </NavDropdown.Item>
+                            <NavDropdown.Item id="AppLogs"> App Logs </NavDropdown.Item>
+                        </NavDropdown>                                 
                     </Nav>
                     <OverlayTrigger
                         key="user_trigger_bottom"
@@ -96,7 +102,7 @@ const MenuItemComp = (props) => {
                         <Button variant="default" onClick={handleSignOut}>
                             <FontAwesomeIcon className={theme.style.text} icon={faSignOutAlt} size="2x" />
                         </Button>  
-                    </Form>                  
+                    </Form>
                 </Navbar.Collapse>
             </Navbar>
             <CambiarClaveModalComp show={show} handleClose={handleClose} />

@@ -8,6 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 import API from '../config/API';
 import config from '../config/Config';
 import Validate from 'validate.js';
+import Cookies from 'universal-cookie';
 /*
 * REDUX Actions imports
 */
@@ -22,7 +23,6 @@ import DatePickerComp from '../components/DatePickerComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
 import ErrorMessage from '../components/ErrorMessage';
-import Cookies from 'universal-cookie';
 
 const IngresoSimulado = () => {
     
@@ -127,7 +127,7 @@ const IngresoSimulado = () => {
                             {errors.monto && <ErrorMessage message={"Debe ingresar un monto valida."} />}
                         </Col>
                     </Form.Group>    
-                    <FormButtonsComp reset={reset} />               
+                    <FormButtonsComp reset={reset} />
                 </Form>
                 <MontoTotalSimuladoComp token={cookies.get('jwtToken')} />
             </Container>

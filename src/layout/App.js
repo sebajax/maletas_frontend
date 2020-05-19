@@ -23,6 +23,8 @@ import MenuPrincipal from './MenuPrincipal';
 import IngresoSimulado from './IngresoSimulado';
 import GastoSimulado from './GastoSimulado';
 import NotFound from './NotFound';
+import CrearUsuario from './CrearUsuario';
+import ConsultaUsuarios from './ConsultaUsuarios';
 
 const App = () => {
 
@@ -37,15 +39,17 @@ const App = () => {
     };
 
     useEffect(() => {
-        API.get(config.URL_API)
-        .then(res => {
-            if(res.status === 200)
-                dispatch(setValidateMessage(false, ``, 'success'));
-        })
-        .catch(err => {
-            dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`));
-        });        
-    }, [dispatch]);    
+        const checkApi = async () => { 
+            try {
+                const res = await API.get(config.URL_API);
+                if(res.status === 200)
+                    dispatch(setValidateMessage(false, ``, 'success'));
+            }catch(err) {
+                dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`));
+            };      
+        };
+        checkApi();
+    }, [dispatch]);
 
     return(
         <BrowserRouter>   
@@ -71,6 +75,18 @@ const App = () => {
                         <GastoSimulado /> : <NotFound />}
                 >   
                 </Route>
+                <Route 
+                    exact path={config.URL_CREAR_USUARIO}
+                    render={() => (isAuth()) ?
+                        <CrearUsuario /> : <NotFound />}
+                >   
+                </Route>               
+                <Route 
+                    exact path={config.URL_CONSULTA_USUARIOS}
+                    render={() => (isAuth()) ?
+                        <ConsultaUsuarios /> : <NotFound />}
+                >   
+                </Route>                  
                 <Route path="*">
                     <NotFound />
                 </Route>                 

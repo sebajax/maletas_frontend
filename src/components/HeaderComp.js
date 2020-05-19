@@ -1,8 +1,14 @@
+/*
+* Node Modules imports
+*/
 import React, { Fragment } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { setValidateMessage } from '../redux/actions/HeaderActions';
 import Validate from 'validate.js';
+/*
+* REDUX Actions imports
+*/
+import { setValidateMessage } from '../redux/actions/HeaderActions';
 
 const HeaderComp = (props) => {
     
@@ -16,10 +22,11 @@ const HeaderComp = (props) => {
     
     if(navItems) {
         listItems = props.navItems.map((navItem, index) => {
-            if((index+1) === props.navItems.length) 
+            if((index+1) === props.navItems.length)
                 item = `\xa0 ${navItem.toString()}`;
             else 
-            item = `\xa0 ${navItem.toString()} /`;
+                item = `\xa0 ${navItem.toString()} /`;
+
             return <Form.Label className={theme.style.breadCrumb} key={navItem.toString()}>{item}</Form.Label>
         });
     }

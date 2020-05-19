@@ -8,7 +8,9 @@ const blackTheme = {
         text: "text-primary",
         btnSuccess: "outline-primary",
         btnCancel: "outline-danger",
-        breadCrumb: "text-primary"
+        breadCrumb: "text-primary",
+        tableHead: "table-dark",
+        tableColor: "table-light",
     }
 };
 
@@ -20,7 +22,9 @@ const blueTheme = {
         text: "text-white",
         btnSuccess: "primary",
         btnCancel: "danger",
-        breadCrumb: "text-primary"
+        breadCrumb: "text-primary",
+        tableHead: "table-primary",
+        tableColor: "table-light",
     }
 };
 

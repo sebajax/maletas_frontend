@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 const FormButtonsComp = (props) => {
 
-    let theme = useSelector(state => state.ThemeReducer);
+    const theme = useSelector(state => state.ThemeReducer);
 
     return (
         <Alert className="w-100" variant={theme.style.bg}>
