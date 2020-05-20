@@ -19,8 +19,11 @@ const URL_API_TOKEN = `${URL_API_LOGIN}/checkToken`;
 
 //Usuarios
 const URL_API_GET_USUARIOS = `${URL_API}usuarios/getAllUsuarios/`;
+const URL_API_GET_USUARIO = `${URL_API}usuarios/getUsuario/`;
+const URL_API_GET_USUARIO_ID = `${URL_API}usuarios/getUsuarioId/`;
 const URL_API_SAVE_USUARIO = `${URL_API}usuarios/saveUsuario/`;
 const URL_API_UPDATE_USUARIO = `${URL_API}usuarios/updateUsuario/`;
+const URL_API_DELETE_USUARIO = `${URL_API}usuarios/removeUsuario/`;
 const URL_API_UPDATE_THEME = `${URL_API}usuarios/updateTheme/`;
 
 //Permisos
@@ -46,8 +49,11 @@ const config = {
     URL_API_GET_MONTO_TOTAL_SIMULADO,
     URL_API_SAVE_INGRESO_SIMULADO,
     URL_API_GET_USUARIOS,
+    URL_API_GET_USUARIO,
+    URL_API_GET_USUARIO_ID,
     URL_API_SAVE_USUARIO,
     URL_API_UPDATE_USUARIO,
+    URL_API_DELETE_USUARIO,
     URL_API_UPDATE_THEME,
     URL_API_GET_PERMISOS,
     SERVER_ERR_COM

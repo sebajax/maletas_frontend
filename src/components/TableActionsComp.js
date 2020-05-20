@@ -7,26 +7,27 @@ import { useSelector } from 'react-redux';
 const TableActionsComp = props => {
 
     const theme = useSelector(state => state.ThemeReducer);
+    const id = props.tableActions.id;
 
     return (
         <Fragment>
             {(props.tableActions.delete) &&
-                <td key={`td_delete_${props.tableActions._id}`}>
-                    <Button variant={theme.style.btnCancel}>
+                <td key={`td_delete_${id}`}>
+                    <Button variant={theme.style.btnCancel} onClick={ () => props.handleDelete(id)}>
                         <FontAwesomeIcon icon={faTrash} size="lg" />
                     </Button>
                 </td>
             }
             {(props.tableActions.update) &&
-                <td key={`td_update_${props.tableActions._id}`}>
-                    <Button variant={theme.style.btnSuccess}>
+                <td key={`td_update_${id}`}>
+                    <Button variant={theme.style.btnSuccess} onClick={ () => props.handleUpdate(id)}>
                         <FontAwesomeIcon icon={faSave} size="lg" />
                     </Button>
                 </td>
             }
             {(props.tableActions.emptyPass) &&                   
-                <td key={`td_emptyPass_${props.tableActions._id}`}>
-                    <Button variant={theme.style.btnSuccess}>
+                <td key={`td_emptyPass_${id}`}>
+                    <Button variant={theme.style.btnSuccess} onClick={ () => props.handleEmptyPass(id)}>
                         <FontAwesomeIcon icon={faUnlock} size="lg" />
                     </Button>
                 </td>

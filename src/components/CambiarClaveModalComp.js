@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 import FormButtonsComp from './FormButtonsComp';
 
-const CambiarClaveModalComp = (props) => {
+const CambiarClaveModalComp = props => {
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>

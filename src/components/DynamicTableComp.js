@@ -4,18 +4,19 @@ import { useSelector } from 'react-redux';
 import TableActionsComp from '../components/TableActionsComp';
 
 const DynamicTableComp = (props) => {
+    
     const theme = useSelector(state => state.ThemeReducer);
 
-    const renderTd = (_id, tdMap) => {
+    const renderTd = (id, tdMap) => {
         let render = [];
         let tableActions = {
-            "_id": _id,
+            "id": id,
             "update": false, 
             "delete": false,
             "emptyPass": false
         };
         for(let[key, val] of Object.entries(tdMap)) {
-            if(key !== '_id') {
+            if(key !== 'id') {
                 switch(key) {
                     case "update":
                         tableActions.update = true;
@@ -27,11 +28,19 @@ const DynamicTableComp = (props) => {
                         tableActions.emptyPass = true;
                         break;
                     default:
-                        render.push(<td key={`td_${_id}_${key}`}>{val}</td>);
+                        render.push(<td key={`td_${id}_${key}`}>{val}</td>);
                 }
             }
         };
-        render.push(<TableActionsComp key={`table_action_comp_${_id}`} tableActions={tableActions} />);
+        render.push(
+            <TableActionsComp 
+                key={`table_action_comp_${id}`} 
+                tableActions={tableActions} 
+                handleDelete={props.handleDelete} 
+                handleUpdate={props.handleUpdate} 
+                handleEmptyPass={props.handleEmptyPass}                 
+            />
+        );
         return render;
     };
 
@@ -48,10 +57,10 @@ const DynamicTableComp = (props) => {
                 <tbody>
                     {(props.tbody) ? 
                         props.tbody.map(tdMap => {
-                            let _id = tdMap._id;
+                            let id = tdMap.id;
                             return (
-                                <tr key={_id}>
-                                    {renderTd(_id, tdMap)}
+                                <tr key={id}>
+                                    {renderTd(id, tdMap)}
                                 </tr>
                             )
                         })
