@@ -2,12 +2,15 @@
 * Node Modules imports
 */
 import React, { Fragment, useState, useEffect } from 'react';
-import { Container, Form, Col } from 'react-bootstrap';
-import Cookies from 'universal-cookie';
+import { Container, Form, Col, Spinner } from 'react-bootstrap';
 import API from '../config/API';
 import config from '../config/Config';
 import { useDispatch } from 'react-redux';
 import { useForm, Controller } from "react-hook-form";
+/*
+* HOOKS imports
+*/
+import useQueryApi from '../hooks/QueryApiHook';
 /*
 * COMPONENT imports
 */
@@ -16,27 +19,45 @@ import QueryButtonsComp from '../components/QueryButtonsComp';
 import HeaderComp from '../components/HeaderComp';
 import SelectPermComp from '../components/SelectPermComp';
 import DynamicTableComp from '../components/DynamicTableComp';
+import QueryModalComp from '../components/QueryModalComp';
+import PaginationComp from '../components/PaginationComp';
 /*
 * REDUX Actions imports
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
-import QueryModalComp from '../components/QueryModalComp';
 
 const ConsultaUsuarios = () => {
-    const [data, setData] = useState({});
-    const [queryAction, setQueryAction] = useState({});
+
+    //Layout states
+    const [query, setQuery] = useState();
+    const [actionId, setActionId] = useState();
     const [tbody, setTbody] = useState();
     const [modalInfo, setModalInfo] = useState();
-    const [actionId, setActionId] = useState();
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [totalPages, setTotalPages] = useState();
+    const [page, setPage] = useState(1);
+    
+    const headers = config.API_TOKEN.headers;
+    const queryConfig = {
+        url: `${config.URL_API_GET_USUARIOS}${page}`,
+        config: {
+            headers,
+            params: {
+                q: {}
+            }
+        }
+    };    
+    
+    const [{result, isLoading, render}, {setOptions, setRender}] = useQueryApi();
     const dispatch = useDispatch();
-    const cookies = new Cookies();
-    let token = cookies.get('jwtToken');
     let title = "Consulta Usuarios";
     let navItems = ["Admin", title];
-    let modalBody = "";
+    
+    //Modal actions
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const { register, handleSubmit, control, setValue } = useForm();
 
     const thead = [
         "Usuario",
@@ -48,30 +69,39 @@ const ConsultaUsuarios = () => {
         "V.Clave"
     ];
 
-    const { register, handleSubmit, control, setValue } = useForm({
-        mode: 'onChange',
-    });
+    const handlePage = clickedPage => {
+        console.log(clickedPage);
+        let builder = query;
+        builder.url = `${config.URL_API_GET_USUARIOS}${clickedPage}`;
+        //setPage(clickedPage);
+        setQuery(builder);
+        setRender(!render);
+    };
 
-    const onSubmit = (data, e) => {
+    const onSubmit = async (data, e) => {
         e.preventDefault();
-        let builder = {};
-        if(data.nombre !== "")
-            builder = {
-                "name": data.nombre
-            };
-        if(data.permisos_app)
-            builder = {
-                "config.permId": data.permisos_app
-            };
-        setData(builder);
+
+        let builder = queryConfig;
+       
+        if(data.nombre !== "") {
+            builder.config.params.q.name = data.nombre
+        }
+
+        if(data.permisos_app) {
+            Object.assign(builder.config.params.q, data.permisos_app)
+        }
+
+        console.log(builder);
+        //setPage(1);
+        //setTotalPages(1);
+        setQuery(builder);
     };
 
     const handleDelete = async id => {
         try {
             let res = await getUsuarioInfo(id);
             if(res) {
-                modalBody = `¿ Esta seguro de eliminar al usuario ${res.data.user} ?`;
-                setModalInfo(modalBody);
+                setModalInfo(`¿ Esta seguro de eliminar al usuario ${res.data.user} ?`);
                 setActionId(id);
                 return handleShow();
             }else {
@@ -86,23 +116,19 @@ const ConsultaUsuarios = () => {
 
     const deleteUsuario = async () => {
         try {
-            let res = await API.delete(config.URL_API_DELETE_USUARIO+actionId, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });     
+            let res = await API.delete(config.URL_API_DELETE_USUARIO+actionId, config.API_TOKEN);     
             if(res) {
                 handleClose();
                 setModalInfo(null);
                 setActionId(null);
-                setQueryAction();
+                setRender(!render);
                 dispatch(setValidateMessage(true, res.data.message, 'success'));
                 setTimeout(() => {
                     dispatch(setValidateMessage());
                 }, 3000);
             }else {
                 dispatch(setValidateMessage(true, `Usuario inexistente`));
-                return;                
+                return;
             }
         }catch(err) {
             dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
@@ -120,11 +146,7 @@ const ConsultaUsuarios = () => {
 
     const getUsuarioInfo = async id => {
         try {
-            return await API.get(config.URL_API_GET_USUARIO_ID+id, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });                
+            return await API.get(config.URL_API_GET_USUARIO_ID+id, config.API_TOKEN);                
         }catch(err) {
             dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
             return;
@@ -136,33 +158,26 @@ const ConsultaUsuarios = () => {
     }
 
     useEffect(() => {
-        console.log("ENTRE");
-        const getUsuarios = async () => {
-            try {
-                let res = await API.post(config.URL_API_GET_USUARIOS, {data}, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                let body = res.data.map(element => {
-                    return {
-                        "id": element._id,
-                        "user": element.user,
-                        "name": element.name,
-                        "appTheme": (element.config.appTheme) ? "Blue Theme" : "Black Theme",
-                        "permType": element.config.permId.permType,
-                        "update": "update",
-                        "delete": "delete",
-                        "emptyPass": "emptyPass"
-                    };
-                });
-                setTbody(body);
-            }catch(err) {
-                dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
-            }
-        }       
-        getUsuarios();
-    }, [dispatch, token, data, queryAction]);
+        console.log("Entre a hook");
+        setOptions(query);
+        if(result) {
+            let body = result.docs.map(element => {
+                return {
+                    "id": element._id,
+                    "user": element.user,
+                    "name": element.name,
+                    "appTheme": (element.config.appTheme) ? "Blue Theme" : "Black Theme",
+                    "permType": element.config.permId.permType,
+                    "update": "update",
+                    "delete": "delete",
+                    "emptyPass": "emptyPass"
+                };
+            });
+            setTbody(body);   
+            setPage(result.page);
+            setTotalPages(result.totalPages);
+        }
+    }, [result, query, setOptions]);
 
     return (
         <Fragment>
@@ -179,7 +194,7 @@ const ConsultaUsuarios = () => {
                         </Form.Group>
                         <Form.Group as={Col} controlId="permisos_app">
                             <Controller
-                                as={<SelectPermComp token={cookies.get('jwtToken')} handleChangePerm={handleChangePerm} />}
+                                as={<SelectPermComp handleChangePerm={handleChangePerm} />}
                                 control={control}
                                 name="permisos_app"
                             />
@@ -187,15 +202,20 @@ const ConsultaUsuarios = () => {
                     </Form.Row>
                     <QueryButtonsComp />
                 </Form>
-                <DynamicTableComp 
-                    thead={thead} 
-                    tbody={tbody}
-                    handleDelete={handleDelete} 
-                    handleUpdate={handleUpdate}
-                    handleEmptyPass={handleEmptyPass}
-                />
+                {isLoading ? (
+                    <Spinner animation="border" variant="primary" />
+                ):(
+                    <DynamicTableComp 
+                        thead={thead} 
+                        tbody={tbody}
+                        handleDelete={handleDelete} 
+                        handleUpdate={handleUpdate}
+                        handleEmptyPass={handleEmptyPass}
+                    />
+                )}
+                <PaginationComp page={page} totalPages={totalPages} handlePage={handlePage} />
             </Container>
-            <QueryModalComp 
+            <QueryModalComp
                 show={show} 
                 handleClose={handleClose} 
                 body={modalInfo} 

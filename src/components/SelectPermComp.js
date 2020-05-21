@@ -19,11 +19,7 @@ const SelectPermComp = (props) => {
     useEffect(() => {
         const getPermisos = async () => {
             try {
-                let res = await API.get(config.URL_API_GET_PERMISOS, {
-                    headers: {
-                        Authorization: `Bearer ${props.token}`
-                    }
-                });
+                let res = await API.get(config.URL_API_GET_PERMISOS, config.API_TOKEN);
                 if(res.data) {
                     let options = res.data.map((perm) => {
                         return <option value={perm._id} key={perm._id.toString()}>{perm.permType}</option>;

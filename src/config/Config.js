@@ -1,3 +1,7 @@
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+const TOKEN = cookies.get('jwtToken');
+
 /*
     CONST URL REACT FRONT END
 */
@@ -33,9 +37,16 @@ const URL_API_GET_PERMISOS = `${URL_API}permisos/getPermisos/`;
 const URL_API_GET_MONTO_TOTAL_SIMULADO = `${URL_API}ingresosSimulado/getMontoTotalSimulado`;
 const URL_API_SAVE_INGRESO_SIMULADO = `${URL_API}ingresosSimulado/saveIngresoSimulado`;
 
+const API_TOKEN = {
+    headers: {
+        Authorization: `Bearer ${TOKEN}`
+    }
+}
+
 const SERVER_ERR_COM = "ERROR de comunicacion con servidor";
 
 const config = {
+    API_TOKEN,
     URL,
     URL_LOGIN,
     URL_MENU_PRINCIPAL, 

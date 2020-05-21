@@ -58,6 +58,7 @@ const CrearUsuario = () => {
                 }
             });
             e.target.reset();
+            setValue("permisos_app", "");
             dispatch(setValidateMessage(true, `Usuario: ${data.usuario} creado con exito!`, 'success'));
             setTimeout(() => {
                 dispatch(setValidateMessage());
