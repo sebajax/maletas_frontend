@@ -8,25 +8,25 @@ const PaginationComp = props => {
 
     const totalPages = (result) ? result.totalPages : 1;
     const page = (result) ? result.page : 1;
-    const pageEllipsis = 7;
-    const maximumPages = 20;
+    const pageEllipsis = 8;
+    const startIndex = (page > 3) ?  (page - 3) : 1;
 
     const renderPagination = () => {
         let pageItems = []
-        let total = 0;
-        
-        (totalPages > maximumPages) ? total = maximumPages : total = totalPages;
+        let indexEllipsis = 1;
     
-        for (let number = 1; number <= total; number++) {
-            if(number === pageEllipsis) {
+        for (let number = startIndex; number <= totalPages; number++) {
+            if(indexEllipsis === pageEllipsis) {
                 pageItems.push(<Pagination.Ellipsis key={`page_ellipsis ${number}`} />);
                 number = totalPages;
+                indexEllipsis = 1;
             }
             pageItems.push(
                 <Pagination.Item key={number} active={number === page} onClick={() => props.handlePage(number)}>
                     {number}
                 </Pagination.Item>
             );
+            indexEllipsis++;
         }
         return pageItems;
     };

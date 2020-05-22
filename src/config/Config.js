@@ -41,7 +41,7 @@ const API_TOKEN = {
     headers: {
         Authorization: `Bearer ${TOKEN}`
     }
-}
+};
 
 const SERVER_ERR_COM = "ERROR de comunicacion con servidor";
 const ERROR_SOLICITUD = "Hubo un error al procesar su solicitud";
