@@ -44,8 +44,11 @@ const API_TOKEN = {
 }
 
 const SERVER_ERR_COM = "ERROR de comunicacion con servidor";
+const ERROR_SOLICITUD = "Hubo un error al procesar su solicitud";
 
 const config = {
+    ERROR_SOLICITUD,
+    TOKEN,
     API_TOKEN,
     URL,
     URL_LOGIN,

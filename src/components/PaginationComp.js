@@ -1,22 +1,24 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import Pagination from 'react-bootstrap/Pagination'
+import { useSelector } from 'react-redux';
 
 const PaginationComp = props => {
+    
+    const result = useSelector(state => state.QueryResultReducer);
 
-    const [items, setItems] = useState([]);
+    const totalPages = (result) ? result.totalPages : 1;
+    const page = (result) ? result.page : 1;
+    const pageEllipsis = 7;
+    const maximumPages = 20;
 
-    useEffect(() => {
-        console.log("Entre a hook pagination");
-
-        let page = props.page;
-        let totalPages = props.totalPages;
+    const renderPagination = () => {
         let pageItems = []
         let total = 0;
-
-        (totalPages > 20) ? total = 20 : total = totalPages;
-
+        
+        (totalPages > maximumPages) ? total = maximumPages : total = totalPages;
+    
         for (let number = 1; number <= total; number++) {
-            if(number === 7) {
+            if(number === pageEllipsis) {
                 pageItems.push(<Pagination.Ellipsis key={`page_ellipsis ${number}`} />);
                 number = totalPages;
             }
@@ -26,18 +28,18 @@ const PaginationComp = props => {
                 </Pagination.Item>
             );
         }
-        setItems(pageItems);
-    }, [props]);
+        return pageItems;
+    };
 
     return (
         <Fragment>
-        {(props.totalPages > 1) &&
+        {(totalPages > 1) &&
             <Pagination>
                 <Pagination.First key="first_page" onClick={() => props.handlePage(1)} />
-                <Pagination.Prev key="prev_page" onClick={() => (props.page > 1) ? props.handlePage(props.page-1) : props.handlePage(1)} />
-                {items}
-                <Pagination.Next key="next_page" onClick={() => (props.page === props.totalPages) ? props.handlePage(props.totalPages) : props.handlePage(props.page+1)} />
-                <Pagination.Last key="last_page" onClick={() => props.handlePage(props.totalPages)} />
+                <Pagination.Prev key="prev_page" onClick={() => (page > 1) ? props.handlePage(page-1) : props.handlePage(1)} />
+                {renderPagination()}
+                <Pagination.Next key="next_page" onClick={() => (page === totalPages) ? props.handlePage(totalPages) : props.handlePage(page+1)} />
+                <Pagination.Last key="last_page" onClick={() => props.handlePage(totalPages)} />
             </Pagination>
         }
         </Fragment>

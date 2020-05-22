@@ -21,7 +21,7 @@ import { setValidateMessage } from '../redux/actions/HeaderActions';
 */
 import CambiarClaveModalComp from './CambiarClaveModalComp';
 
-const MenuItemComp = (props) => {
+const MenuItemComp = props => {
     
     const history = useHistory();
     const cookies = new Cookies();
@@ -44,14 +44,10 @@ const MenuItemComp = (props) => {
             "appTheme": (theme.theme) ? false : true,
         };
         try {
-            await API.put(config.URL_API_UPDATE_THEME+sessionStorage.getItem('userId'), {data}, {
-                headers: {
-                    Authorization: `Bearer ${cookies.get('jwtToken')}`
-                }
-            });
+            await API.put(config.URL_API_UPDATE_THEME+sessionStorage.getItem('userId'), {data}, config.API_TOKEN);
             dispatch(changeTheme());
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`)); 
+            dispatch(setValidateMessage(true, `${err} ${config.SERVER_ERR_COM}`)); 
         };
     };
 

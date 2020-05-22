@@ -14,26 +14,24 @@ import config from '../config/Config';
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { initMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
 
-const MontoTotalSimuladoComp = (props) => {
+const MontoTotalSimuladoComp = () => {
     const dispatch = useDispatch();
     let theme = useSelector(state => state.ThemeReducer);
     let monto = useSelector(state => state.MontoTotalSimuladoReducer);
     let variant = (monto <= 0) ? "danger" : (theme.theme) ? "success" : "primary";
    
     useEffect(() => {
-        API.get(config.URL_API_GET_MONTO_TOTAL_SIMULADO, {
-            headers: {
-                Authorization: `Bearer ${props.token}`
-            }
-        })
-        .then(res => {
-            if(res.data.monto)
-                dispatch(initMontoTotalSimulado(res.data.monto));
-        })
-        .catch(err => {
-            dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`)); 
-        });
-    }, [dispatch, props.token]);
+        const getMontoTotalSimulado = async () => {
+            try {
+                let res = await API.get(config.URL_API_GET_MONTO_TOTAL_SIMULADO, config.API_TOKEN)
+                if(res.data.monto)
+                    dispatch(initMontoTotalSimulado(res.data.monto));
+            }catch(err) {
+                dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`)); 
+            };
+        };
+        getMontoTotalSimulado();
+    }, [dispatch]);
 
     return (
         <Alert variant={variant}>

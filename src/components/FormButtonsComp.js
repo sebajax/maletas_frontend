@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Col, Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-const FormButtonsComp = (props) => {
+const FormButtonsComp = props => {
 
     const theme = useSelector(state => state.ThemeReducer);
 

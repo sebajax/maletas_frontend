@@ -3,11 +3,13 @@ import { combineReducers } from 'redux';
 import MontoTotalSimuladoReducer from './MontoTotalSimuladoReducer';
 import HeaderReducer from './HeaderReducer';
 import ThemeReducer from './ThemeReducer';
+import QueryResultReducer from './QueryResultReducer';
 
 const appReducer = combineReducers({ 
     MontoTotalSimuladoReducer,
     HeaderReducer,
-    ThemeReducer
+    ThemeReducer,
+    QueryResultReducer
 });
 
 const rootReducer = (state, action) => {

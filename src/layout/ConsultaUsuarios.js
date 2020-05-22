@@ -5,7 +5,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Form, Col, Spinner } from 'react-bootstrap';
 import API from '../config/API';
 import config from '../config/Config';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from "react-hook-form";
 /*
 * HOOKS imports
@@ -25,37 +25,29 @@ import PaginationComp from '../components/PaginationComp';
 * REDUX Actions imports
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
+import { setQueryResults } from '../redux/actions/QueryResultActions';
 
 const ConsultaUsuarios = () => {
-
     //Layout states
-    const [query, setQuery] = useState();
-    const [actionId, setActionId] = useState();
+    const result = useSelector(state => state.QueryResultReducer);
     const [tbody, setTbody] = useState();
-    const [modalInfo, setModalInfo] = useState();
     const [show, setShow] = useState(false);
-    const [totalPages, setTotalPages] = useState();
-    const [page, setPage] = useState(1);
     
-    const headers = config.API_TOKEN.headers;
-    const queryConfig = {
-        url: `${config.URL_API_GET_USUARIOS}${page}`,
-        config: {
-            headers,
-            params: {
-                q: {}
-            }
-        }
-    };    
-    
-    const [{result, isLoading, render}, {setOptions, setRender}] = useQueryApi();
     const dispatch = useDispatch();
+    const [{isLoading}, {setQuery, setUrl}] = useQueryApi();
+    const url = `${config.URL_API_GET_USUARIOS}1`
     let title = "Consulta Usuarios";
     let navItems = ["Admin", title];
-    
+
     //Modal actions
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleClose = () => setShow({
+        show: false,
+        id: null
+    });
+    const handleShow = id => setShow({
+        show: true,
+        id: id
+    });
 
     const { register, handleSubmit, control, setValue } = useForm();
 
@@ -70,85 +62,75 @@ const ConsultaUsuarios = () => {
     ];
 
     const handlePage = clickedPage => {
-        console.log(clickedPage);
-        let builder = query;
-        builder.url = `${config.URL_API_GET_USUARIOS}${clickedPage}`;
-        //setPage(clickedPage);
-        setQuery(builder);
-        setRender(!render);
+        setUrl(`${config.URL_API_GET_USUARIOS}${clickedPage}`);
     };
 
     const onSubmit = async (data, e) => {
         e.preventDefault();
+        let query = {}
 
-        let builder = queryConfig;
-       
-        if(data.nombre !== "") {
-            builder.config.params.q.name = data.nombre
-        }
-
-        if(data.permisos_app) {
-            Object.assign(builder.config.params.q, data.permisos_app)
-        }
-
-        console.log(builder);
-        //setPage(1);
-        //setTotalPages(1);
-        setQuery(builder);
+        if(data.nombre !== "")
+            query.name = data.nombre;
+        if(data.permisos_app) 
+            query.permId = data.permisos_app;
+        
+        setUrl(url);
+        setQuery(query);
     };
 
     const handleDelete = async id => {
         try {
             let res = await getUsuarioInfo(id);
             if(res) {
-                setModalInfo(`¿ Esta seguro de eliminar al usuario ${res.data.user} ?`);
-                setActionId(id);
-                return handleShow();
+                return handleShow(id);
             }else {
                 dispatch(setValidateMessage(true, `Usuario inexistente`));
                 return;                
             }
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
             return;
         }
     };
 
     const deleteUsuario = async () => {
         try {
-            let res = await API.delete(config.URL_API_DELETE_USUARIO+actionId, config.API_TOKEN);     
+            let res = await API.delete(config.URL_API_DELETE_USUARIO+show.id, config.API_TOKEN);     
             if(res) {
+                let data = Object.assign({}, result);
+                data.docs = data.docs.filter(obj => {
+                    return obj._id !== show.id;
+                });
+                dispatch(setQueryResults(data));
                 handleClose();
-                setModalInfo(null);
-                setActionId(null);
-                setRender(!render);
                 dispatch(setValidateMessage(true, res.data.message, 'success'));
-                setTimeout(() => {
-                    dispatch(setValidateMessage());
-                }, 3000);
             }else {
                 dispatch(setValidateMessage(true, `Usuario inexistente`));
                 return;
             }
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
             return;
         };    
     };
 
-    const handleUpdate = () => {
+    const handleUpdate = async id => {
         
     };
+/*
+    const updateUsuario = async () => {
 
-    const handleEmptyPass = () => {
+    }
+*/
+    const handleEmptyPass = async id => {
 
     };
 
     const getUsuarioInfo = async id => {
         try {
-            return await API.get(config.URL_API_GET_USUARIO_ID+id, config.API_TOKEN);                
+            return await API.get(config.URL_API_GET_USUARIO_ID+id, config.API_TOKEN);
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
             return;
         };
     };
@@ -158,8 +140,6 @@ const ConsultaUsuarios = () => {
     }
 
     useEffect(() => {
-        console.log("Entre a hook");
-        setOptions(query);
         if(result) {
             let body = result.docs.map(element => {
                 return {
@@ -173,11 +153,9 @@ const ConsultaUsuarios = () => {
                     "emptyPass": "emptyPass"
                 };
             });
-            setTbody(body);   
-            setPage(result.page);
-            setTotalPages(result.totalPages);
+            setTbody(body);  
         }
-    }, [result, query, setOptions]);
+    }, [result]);
 
     return (
         <Fragment>
@@ -213,12 +191,11 @@ const ConsultaUsuarios = () => {
                         handleEmptyPass={handleEmptyPass}
                     />
                 )}
-                <PaginationComp page={page} totalPages={totalPages} handlePage={handlePage} />
+                <PaginationComp handlePage={handlePage} />
             </Container>
             <QueryModalComp
                 show={show} 
                 handleClose={handleClose} 
-                body={modalInfo} 
                 delete={deleteUsuario}
             />
         </Fragment>

@@ -45,7 +45,7 @@ const App = () => {
                 if(res.status === 200)
                     dispatch(setValidateMessage(false, ``, 'success'));
             }catch(err) {
-                dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`));
+                dispatch(setValidateMessage(true, `${err} ${config.SERVER_ERR_COM}`));
             };      
         };
         checkApi();

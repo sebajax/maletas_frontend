@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { Alert } from 'react-bootstrap';
 
-const ErrorMessage = (props) => (
+const ErrorMessage = props => (
     <div className="d-flex flex-row">
         <Alert className="p-1" variant="danger">
             <FontAwesomeIcon icon={faExclamationCircle} />

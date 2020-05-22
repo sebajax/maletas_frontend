@@ -10,7 +10,7 @@ import Validate from 'validate.js';
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 
-const HeaderComp = (props) => {
+const HeaderComp = props => {
     
     const dispatch = useDispatch();
     let validate = useSelector(state => state.HeaderReducer);
@@ -31,6 +31,12 @@ const HeaderComp = (props) => {
         });
     }
 
+    if(validate.valid) {
+        setTimeout(() => {
+            dispatch(setValidateMessage());
+        }, 4000)        
+    };
+
     return (
         <Fragment>
             {navItems 
@@ -42,7 +48,9 @@ const HeaderComp = (props) => {
                     ""
             }
             {title ? <h3 className="text-primary mb-4">{props.title}</h3> : ""}
-            {validate.valid && <Alert variant={validate.variant} onClose={() => dispatch(setValidateMessage())} dismissible> {validate.message} </Alert>}
+            {validate.valid && 
+                <Alert variant={validate.variant} onClose={() => dispatch(setValidateMessage())} dismissible> {validate.message} </Alert>
+            }
 
         </Fragment>
     );

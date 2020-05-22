@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 
-const SelectPermComp = (props) => {
+const SelectPermComp = props => {
 
     const dispatch = useDispatch();
     const [permisos, setPermisos] = useState();
@@ -27,11 +27,11 @@ const SelectPermComp = (props) => {
                     setPermisos(options);
                 }        
             }catch(err) {
-                dispatch(setValidateMessage(true, `${err} (No es posible conectarse al servidor)`)); 
+                dispatch(setValidateMessage(true, `${err} ${config.SERVER_ERR_COM}`)); 
             };
         };
         getPermisos();
-    }, [dispatch, props.token]);
+    }, [dispatch]);
 
     return (
         <Form.Control 

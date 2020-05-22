@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Alert, Col, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-const QueryButtonsComp = (props) => {
+const QueryButtonsComp = () => {
 
     const theme = useSelector(state => state.ThemeReducer);
 

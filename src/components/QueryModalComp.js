@@ -8,9 +8,12 @@ const QueryModalComp = props => {
     const theme = useSelector(state => state.ThemeReducer);
 
     return (
-        <Modal show={props.show} onHide={props.handleClose}>
+        <Modal show={props.show.show} onHide={props.handleClose}>
+            <Modal.Header>
+                <Modal.Title className={theme.style.modalTitle}>Confirma eliminar registro</Modal.Title>
+            </Modal.Header>
             <Modal.Body>
-                {props.body}
+                ¿ Esta seguro de realizar esta operación ?
             </Modal.Body>
             <Modal.Footer className="w-100">
                 <Alert className="w-100" variant={theme.style.bg}>

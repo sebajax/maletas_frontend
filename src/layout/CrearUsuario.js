@@ -7,7 +7,6 @@ import { useForm, Controller } from "react-hook-form";
 import API from '../config/API';
 import config from '../config/Config';
 import { useDispatch } from 'react-redux';
-import Cookies from 'universal-cookie';
 /*
 * REDUX Actions imports
 */
@@ -24,7 +23,6 @@ import SelectPermComp from '../components/SelectPermComp';
 const CrearUsuario = () => {
 
     const dispatch = useDispatch();
-    const cookies = new Cookies();
     let title = "Crear Usuario";
     let navItems = ["Admin", title];
 
@@ -47,24 +45,17 @@ const CrearUsuario = () => {
                 }  
             };
         }else {
-            dispatch(setValidateMessage(true, `Hubo un error al procesar su solicitud`));
+            dispatch(setValidateMessage(true, config.ERROR_SOLICITUD));
             return;
         }
 
         try {
-            await API.post(config.URL_API_SAVE_USUARIO, req, {
-                headers: {
-                    Authorization: `Bearer ${cookies.get('jwtToken')}`
-                }
-            });
+            await API.post(config.URL_API_SAVE_USUARIO, req, config.API_TOKEN);
             e.target.reset();
             setValue("permisos_app", "");
             dispatch(setValidateMessage(true, `Usuario: ${data.usuario} creado con exito!`, 'success'));
-            setTimeout(() => {
-                dispatch(setValidateMessage());
-            }, 3000);
         }catch(err) {    
-            dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
         };        
     };
 
@@ -109,7 +100,7 @@ const CrearUsuario = () => {
                             <Form.Label column sm={2}>Permisos App</Form.Label>
                             <Col sm={6}>
                                 <Controller
-                                    as={<SelectPermComp token={cookies.get('jwtToken')} handleChangePerm={handleChangePerm} />}
+                                    as={<SelectPermComp handleChangePerm={handleChangePerm} />}
                                     control={control}
                                     name="permisos_app"
                                     rules={{ required: true }}

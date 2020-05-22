@@ -6,7 +6,7 @@ import es from 'date-fns/locale/es';
 
 registerLocale('es', es);
 
-const DatePickerComp = (props) => (
+const DatePickerComp = props => (
         <DatePicker 
             locale="es" 
             selected={props.startDate}

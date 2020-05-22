@@ -8,7 +8,6 @@ import { useForm, Controller } from "react-hook-form";
 import API from '../config/API';
 import config from '../config/Config';
 import Validate from 'validate.js';
-import Cookies from 'universal-cookie';
 /*
 * REDUX Actions imports
 */
@@ -25,9 +24,6 @@ import FormButtonsComp from '../components/FormButtonsComp';
 import ErrorMessage from '../components/ErrorMessage';
 
 const IngresoSimulado = () => {
-    
-    const cookies = new Cookies();
-
     //INI: States
     const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(null);
@@ -44,20 +40,13 @@ const IngresoSimulado = () => {
         e.preventDefault();
         data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
         try {
-            const res = await API.post(config.URL_API_SAVE_INGRESO_SIMULADO, {data}, {
-                headers: {
-                    Authorization: `Bearer ${cookies.get('jwtToken')}`
-                }
-            });
+            const res = await API.post(config.URL_API_SAVE_INGRESO_SIMULADO, {data}, config.API_TOKEN);
             e.target.reset();
             dispatch(setMontoTotalSimulado(res.data.monto));
             setStartDate(null);
             dispatch(setValidateMessage(true, `Monto agregado al total: ${res.data.monto}`, 'success'));
-            setTimeout(() => {
-                dispatch(setValidateMessage());
-            }, 3000);            
         }catch(err) {    
-            dispatch(setValidateMessage(true, `${err} Hubo un error al procesar su solicitud`));
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
         };
     };
 
@@ -67,7 +56,7 @@ const IngresoSimulado = () => {
         else 
             errors.fecha = true; 
         
-        setValue("fecha", newStartDate);
+        setValue("fecha", newStartDate, true);
         setStartDate(newStartDate);
     }
 
@@ -129,7 +118,7 @@ const IngresoSimulado = () => {
                     </Form.Group>    
                     <FormButtonsComp reset={reset} />
                 </Form>
-                <MontoTotalSimuladoComp token={cookies.get('jwtToken')} />
+                <MontoTotalSimuladoComp />
             </Container>
         </Fragment>
     );

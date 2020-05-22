@@ -1,35 +1,38 @@
 import { useState, useEffect } from "react";
 import API from '../config/API';
+import config from '../config/Config';
 import { useDispatch } from 'react-redux';
 /*
 * REDUX Actions imports
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
+import { setQueryResults } from '../redux/actions/QueryResultActions';
 
 const useQueryApi = () => {
-    const [options, setOptions] = useState();
-    const [render, setRender] = useState(false);
-    const [result, setResult] = useState();
+    const [url, setUrl] = useState();
+    const [query, setQuery] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log("ENTRE A QUERY HOOK");
         const getQuery = async () => {
-            if(options) {
+            if(url) {
                 setIsLoading(true);
                 try {
-                    const res = await API.get(options.url, options.config);
-                    setResult(res.data);
+                    const res = await API.get(url, { 
+                        headers: config.API_TOKEN.headers,
+                        params: {q: query},
+                    });
+                    dispatch(setQueryResults(res.data));
                 }catch(err) {
-                    dispatch(setValidateMessage(true, "Hubo un error al procesar su solicitud"));
+                    dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
                 }
                 setIsLoading(false);
             }
         }
         getQuery();
-    }, [dispatch, options, render]);
-    return [{result, isLoading, render}, {setOptions, setRender}];
+    }, [dispatch, query, url]);
+    return [{isLoading}, {setQuery, setUrl}];
 };
 
 export default useQueryApi;

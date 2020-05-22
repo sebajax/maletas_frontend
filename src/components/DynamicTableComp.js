@@ -3,7 +3,7 @@ import { Table } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import TableActionsComp from '../components/TableActionsComp';
 
-const DynamicTableComp = (props) => {
+const DynamicTableComp = props => {
     
     const theme = useSelector(state => state.ThemeReducer);
 
@@ -65,7 +65,6 @@ const DynamicTableComp = (props) => {
                             )
                         })
                     : null }
-                        
                 </tbody>                
             </Table>
         </Fragment>

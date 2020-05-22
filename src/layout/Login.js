@@ -5,7 +5,7 @@ import React, {Fragment} from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Button, Alert, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLuggageCart, faSuitcaseRolling } from '@fortawesome/free-solid-svg-icons';
+import { faLuggageCart, faSuitcaseRolling, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "react-hook-form";
 import API from '../config/API';
 import config from '../config/Config';
@@ -67,8 +67,10 @@ const Login = () => {
             </Navbar>        
             <Container id="container" className="my-5 w-75">
                 <HeaderComp />
-                <Alert variant="primary">
-                    <Alert.Heading>Login</Alert.Heading> 
+                <Alert variant="dark">
+                    <div className="d-flex justify-content-center text-primary" style={{paddingTop: "30px", fontSize: "34px"}}>
+                        <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faUser} size="3x" /></span> 
+                    </div>                
                     <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group controlId="loginUser">
                             <Form.Control 
