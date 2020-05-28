@@ -39,7 +39,6 @@ const Login = () => {
                     password: data.password
                 }
             });
-            console.log(response.data);
             if(response.data.auth && response.data.token) {
                 cookies.set('jwtToken', response.data.token, { path: '/' });
                 sessionStorage.setItem("auth", response.data.auth);

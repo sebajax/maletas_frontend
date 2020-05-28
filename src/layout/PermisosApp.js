@@ -2,7 +2,7 @@
 * Node Modules imports
 */
 import React, { Fragment, useState, useEffect } from 'react';
-import { Container, Form, Col, Spinner } from 'react-bootstrap';
+import { Container, Form, Col, Spinner, Alert, Button } from 'react-bootstrap';
 import API from '../config/API';
 import config from '../config/Config';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,29 +16,38 @@ import useQueryApi from '../hooks/QueryApiHook';
 * COMPONENT imports
 */
 import MenuItemComp from '../components/MenuItemsComp';
-import QueryButtonsComp from '../components/QueryButtonsComp';
 import HeaderComp from '../components/HeaderComp';
 import SelectPermComp from '../components/SelectPermComp';
 import DynamicTableComp from '../components/DynamicTableComp';
 import QueryModalComp from '../components/QueryModalComp';
-import PaginationComp from '../components/PaginationComp';
 /*
 * REDUX Actions imports
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { setQueryResults, cleanQueryResults } from '../redux/actions/QueryResultActions';
 
-const ConsultaUsuarios = () => {
+const PermisosApp = () => {
+
     //Layout states
-    const dispatch = useDispatch();    
     const result = useSelector(state => state.QueryResultReducer);
+    const theme = useSelector(state => state.ThemeReducer);
     const [tbody, setTbody] = useState();
+    const [editId, setEditId] = useState(null);
     const [show, setShow] = useState(false);
-    
+
+    const dispatch = useDispatch();
     const [{isLoading}, {setQuery, setUrl}] = useQueryApi();
-    const url = `${config.URL_API_GET_USUARIOS}1`
-    let title = "Consulta Usuarios";
+
+    const { handleSubmit, control, setValue } = useForm();
+
+    let title = "Permisos App";
     let navItems = ["Admin", title];
+
+    const thead = [
+        "Permiso",
+        "Elim",
+        "Modif",
+    ];
 
     //Modal actions
     const handleClose = () => setShow({
@@ -50,95 +59,75 @@ const ConsultaUsuarios = () => {
         id: id
     });
 
-    const { register, handleSubmit, control, setValue } = useForm();
-
-    const thead = [
-        "Usuario",
-        "Nombre",
-        "App Theme",
-        "Perm",
-        "Elim",
-        "Modif",
-        "V.Clave"
-    ];
-
-    const handlePage = clickedPage => {
-        setUrl(`${config.URL_API_GET_USUARIOS}${clickedPage}`);
-    };
-
     const onSubmit = async (data, e) => {
         e.preventDefault();
         let query = {}
 
-        if(data.nombre !== "")
-            query.name = data.nombre;
         if(data.permisos_app) 
             query.permId = data.permisos_app;
         
-        setUrl(url);
+        setUrl(config.URL_API_GET_PERMISOS);
         setQuery(query);
     };
 
     const handleDelete = async id => {
-        try {
-            let res = await getUsuarioInfo(id);
-            if(res) {
-                return handleShow(id);
-            }else {
-                dispatch(setValidateMessage(true, `Usuario inexistente`));
-                return;                
-            }
-        }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
-            return;
-        }
+        return handleShow(id);      
     };
 
-    const deleteUsuario = async () => {
-        try {
-            let res = await API.delete(config.URL_API_DELETE_USUARIO+show.id, config.API_TOKEN);     
-            if(res) {
-                let data = Object.assign({}, result);
-                data.docs = data.docs.filter(obj => {
-                    return obj._id !== show.id;
-                });
-                dispatch(setQueryResults(data));
-                handleClose();
-                dispatch(setValidateMessage(true, res.data.message, 'success'));
-            }else {
-                dispatch(setValidateMessage(true, `Usuario inexistente`));
-                return;
-            }
-        }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
-            return;
-        };    
-    };
+    const deletePerm = async () => {
+        console.log(show.id);
+    }
 
     const handleUpdate = async id => {
-        
+        setEditId(id);
     };
-/*
-    const updateUsuario = async () => {
 
+    const updateCancel = () => {
+        setEditId(null);
     }
-*/
-    const handleEmptyPass = async id => {
 
-    };
-
-    const getUsuarioInfo = async id => {
-        try {
-            return await API.get(config.URL_API_GET_USUARIO_ID+id, config.API_TOKEN);
-        }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
-            return;
-        };
+    const onUpdate = async (data, id) => {
+        if(data) {
+            if(id === editId) {
+                try {
+                    let permiso = await getPermisoInfo(id);
+                    if(permiso) {
+                        if(permiso.data.permType !== "admin") {
+                            let response = await API.put(config.URL_API_UPDATE_PERMISO+id, {data}, config.API_TOKEN);
+                            dispatch(setValidateMessage(true, response.data.message, 'success'));
+                            let res = Object.assign([], result);
+                            let index = res.findIndex(element => element._id === id);
+                            res[index].permType = data.permType;
+                            dispatch(setQueryResults(res));
+                            setEditId(null);
+                        }else {
+                            dispatch(setValidateMessage(true, `${data.permType} prohibido modificar`));
+                            return;
+                        }
+                    }else {
+                        dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                        return;
+                    }
+                }catch(err) {
+                    dispatch(setValidateMessage(true, `${err}`));
+                    return;
+                };            
+            }
+        }
     };
 
     const handleChangePerm = value => {
         setValue("permisos_app", value);
-    }
+    };
+
+    const getPermisoInfo = async id => {
+        try {
+            return await API.get(config.URL_API_GET_PERMISO_ID+id, config.API_TOKEN);
+        }catch(err) {
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            return;
+        };
+    };    
 
     useEffect(() => {
         dispatch(cleanQueryResults());
@@ -146,20 +135,16 @@ const ConsultaUsuarios = () => {
 
     useEffect(() => {
         if(Validate.isDefined(result)) {
-            if(Validate.isDefined(result.docs)) {
-                let body = result.docs.map(element => {
+            if(Validate.isDefined(result.map)) {
+                let body = result.map(element => {
                     return {
                         "id": element._id,
-                        "user": element.user,
-                        "name": element.name,
-                        "appTheme": (element.config.appTheme) ? "Blue Theme" : "Black Theme",
-                        "permType": element.config.permId.permType,
+                        "permType": element.permType,
                         "update": "update",
                         "delete": "delete",
-                        "emptyPass": "emptyPass"
                     };
                 });
-                setTbody(body);  
+                setTbody(body);
             }
         }
     }, [result]);
@@ -171,12 +156,9 @@ const ConsultaUsuarios = () => {
                 <HeaderComp
                     navItems={navItems} 
                     title={title}                    
-                />
+                />   
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Form.Row>
-                        <Form.Group as={Col} controlId="nombre">
-                            <Form.Control type="text" name="nombre" placeholder="Nombre" ref={register()} />
-                        </Form.Group>
                         <Form.Group as={Col} controlId="permisos_app">
                             <Controller
                                 as={<SelectPermComp handleChangePerm={handleChangePerm} />}
@@ -185,28 +167,34 @@ const ConsultaUsuarios = () => {
                             />
                         </Form.Group>
                     </Form.Row>
-                    <QueryButtonsComp />
+                    <Alert className="w-100" variant={theme.style.bg}>
+                        <div className={"d-md-inline-flex"}>
+                            <Col className="mt-2" sm={10}><Button block type="submit" variant={theme.style.btnSuccess}>Consultar</Button></Col>
+                            <Col className="mt-2" sm={10}><Button block type="button" variant={theme.style.btnSuccess}>Crear Perm</Button></Col>
+                        </div>
+                    </Alert>                    
                 </Form>
                 {isLoading ? (
                     <Spinner animation="border" variant="primary" />
                 ):(
-                    <DynamicTableComp 
-                        thead={thead} 
+                    <DynamicTableComp
+                        thead={thead}
                         tbody={tbody}
                         handleDelete={handleDelete} 
                         handleUpdate={handleUpdate}
-                        handleEmptyPass={handleEmptyPass}
+                        updateCancel={updateCancel}
+                        onUpdate={onUpdate}
+                        editId={editId}
                     />
                 )}
-                <PaginationComp handlePage={handlePage} />
             </Container>
             <QueryModalComp
                 show={show} 
                 handleClose={handleClose} 
-                delete={deleteUsuario}
+                delete={deletePerm}
             />
         </Fragment>
     );
-}
+};
 
-export default ConsultaUsuarios;
+export default PermisosApp;

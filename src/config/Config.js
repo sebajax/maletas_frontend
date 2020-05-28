@@ -12,6 +12,7 @@ const URL_INGRESO_SIMULADO = '/IngresoSimulado';
 const URL_GASTO_SIMULADO = '/GastoSimulado';
 const URL_CREAR_USUARIO = '/CrearUsuario';
 const URL_CONSULTA_USUARIOS = '/ConsultaUsuarios';
+const URL_PERMISOS_APP = '/PermisosApp';
 
 /*
     CONST URL API
@@ -32,6 +33,8 @@ const URL_API_UPDATE_THEME = `${URL_API}usuarios/updateTheme/`;
 
 //Permisos
 const URL_API_GET_PERMISOS = `${URL_API}permisos/getPermisos/`;
+const URL_API_UPDATE_PERMISO = `${URL_API}permisos/updatePermiso/`;
+const URL_API_GET_PERMISO_ID = `${URL_API}permisos/getPermisoById/`; 
 
 //Ingresos Simulado
 const URL_API_GET_MONTO_TOTAL_SIMULADO = `${URL_API}ingresosSimulado/getMontoTotalSimulado`;
@@ -57,6 +60,7 @@ const config = {
     URL_GASTO_SIMULADO, 
     URL_CREAR_USUARIO,
     URL_CONSULTA_USUARIOS,
+    URL_PERMISOS_APP,
     URL_API,
     URL_API_LOGIN,
     URL_API_TOKEN,
@@ -70,6 +74,8 @@ const config = {
     URL_API_DELETE_USUARIO,
     URL_API_UPDATE_THEME,
     URL_API_GET_PERMISOS,
+    URL_API_UPDATE_PERMISO,
+    URL_API_GET_PERMISO_ID,
     SERVER_ERR_COM
 };
 

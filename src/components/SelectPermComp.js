@@ -14,7 +14,7 @@ import { setValidateMessage } from '../redux/actions/HeaderActions';
 const SelectPermComp = props => {
 
     const dispatch = useDispatch();
-    const [permisos, setPermisos] = useState();
+    const [permisos, setPermisos] = useState(); //Pasar a REDUX
     
     useEffect(() => {
         const getPermisos = async () => {

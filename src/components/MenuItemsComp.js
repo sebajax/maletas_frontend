@@ -68,6 +68,7 @@ const MenuItemComp = props => {
                         <NavDropdown active={props.eventKey === 2 ? true : false} title="Admin" id="nav-dropdown-admin">
                             <NavDropdown.Item id="CrearUsuario" as={Link} to={config.URL_CREAR_USUARIO}> Crear Usuario</NavDropdown.Item>
                             <NavDropdown.Item id="ConsultaUsuarios" as={Link} to={config.URL_CONSULTA_USUARIOS}> Consulta Usuarios </NavDropdown.Item>
+                            <NavDropdown.Item id="PermisosApp" as={Link} to={config.URL_PERMISOS_APP}> Permisos App </NavDropdown.Item>
                             <NavDropdown.Item id="AsignarPermisos"> Asignar Permisos </NavDropdown.Item>
                             <NavDropdown.Item id="AppLogs"> App Logs </NavDropdown.Item>
                         </NavDropdown>                                 

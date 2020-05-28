@@ -25,6 +25,7 @@ import GastoSimulado from './GastoSimulado';
 import NotFound from './NotFound';
 import CrearUsuario from './CrearUsuario';
 import ConsultaUsuarios from './ConsultaUsuarios';
+import PermisosApp from './PermisosApp';
 
 const App = () => {
 
@@ -86,7 +87,13 @@ const App = () => {
                     render={() => (isAuth()) ?
                         <ConsultaUsuarios /> : <NotFound />}
                 >   
-                </Route>                  
+                </Route>         
+                <Route 
+                    exact path={config.URL_PERMISOS_APP}
+                    render={() => (isAuth()) ?
+                        <PermisosApp /> : <NotFound />}
+                >   
+                </Route>                           
                 <Route path="*">
                     <NotFound />
                 </Route>                 
