@@ -19,6 +19,7 @@ import MenuItemComp from '../components/MenuItemsComp';
 import HeaderComp from '../components/HeaderComp';
 import SelectPermComp from '../components/SelectPermComp';
 import DynamicTableComp from '../components/DynamicTableComp';
+import SavePermisoComp from '../components/SavePermisoComp';
 import QueryModalComp from '../components/QueryModalComp';
 /*
 * REDUX Actions imports
@@ -34,6 +35,7 @@ const PermisosApp = () => {
     const [tbody, setTbody] = useState();
     const [editId, setEditId] = useState(null);
     const [show, setShow] = useState(false);
+    const [createPerm, setCreatePerm] = useState(false);
 
     const dispatch = useDispatch();
     const [{isLoading}, {setQuery, setUrl}] = useQueryApi();
@@ -58,6 +60,8 @@ const PermisosApp = () => {
         show: true,
         id: id
     });
+    const handleCloseCreatePerm = () => setCreatePerm(false);
+    const handleShowCreatePerm = () => setCreatePerm(true);
 
     const onSubmit = async (data, e) => {
         e.preventDefault();
@@ -71,11 +75,39 @@ const PermisosApp = () => {
     };
 
     const handleDelete = async id => {
-        return handleShow(id);      
+        let permiso = await getPermisoInfo(id);
+        if(permiso) {
+            if(permiso.data.permType !== "admin") {
+                return handleShow(id);
+            }else {
+                dispatch(setValidateMessage(true, `prohibido eliminar admin`));
+                return;
+            }
+        }else {
+            dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+            return;
+        }
     };
 
     const deletePerm = async () => {
-        console.log(show.id);
+        try {
+            let res = await API.delete(config.URL_API_DELETE_PERMISO+show.id, config.API_TOKEN);     
+            if(res) {
+                let data = Object.assign([], result);
+                data = data.filter(obj => {
+                    return obj._id !== show.id;
+                });
+                dispatch(setQueryResults(data));
+                handleClose();
+                dispatch(setValidateMessage(true, res.data.message, 'success'));
+            }else {
+                dispatch(setValidateMessage(true, `Permiso inexistente`));
+                return;
+            }
+        }catch(err) {
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            return;
+        };  
     }
 
     const handleUpdate = async id => {
@@ -93,15 +125,24 @@ const PermisosApp = () => {
                     let permiso = await getPermisoInfo(id);
                     if(permiso) {
                         if(permiso.data.permType !== "admin") {
-                            let response = await API.put(config.URL_API_UPDATE_PERMISO+id, {data}, config.API_TOKEN);
-                            dispatch(setValidateMessage(true, response.data.message, 'success'));
-                            let res = Object.assign([], result);
-                            let index = res.findIndex(element => element._id === id);
-                            res[index].permType = data.permType;
-                            dispatch(setQueryResults(res));
-                            setEditId(null);
+                            //updated Permiso - debe tener un permType
+                            if(data[`permType_${id}`]) {
+                                let updatedPermiso = {
+                                    permType: data[`permType_${id}`].toLowerCase()
+                                }
+                                let response = await API.put(config.URL_API_UPDATE_PERMISO+id, updatedPermiso, config.API_TOKEN);
+                                dispatch(setValidateMessage(true, response.data.message, 'success'));
+                                let res = Object.assign([], result);
+                                let index = res.findIndex(element => element._id === id);
+                                res[index].permType = updatedPermiso.permType;
+                                dispatch(setQueryResults(res));
+                                setEditId(null);
+                            }else {
+                                dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                                return;
+                            }
                         }else {
-                            dispatch(setValidateMessage(true, `${data.permType} prohibido modificar`));
+                            dispatch(setValidateMessage(true, `prohibido modificar admin`));
                             return;
                         }
                     }else {
@@ -116,6 +157,33 @@ const PermisosApp = () => {
         }
     };
 
+    const savePermiso = async permiso => {
+        try {
+            if(Validate.isDefined(permiso.permType)) {
+                let reqPerm = {
+                    permType: permiso.permType.toLowerCase()
+                }
+                let newPermiso = await API.post(config.URL_API_SAVE_PERMISO, reqPerm, config.API_TOKEN);
+                if(newPermiso) {
+                    let data = Object.assign([], result);
+                    data.push(newPermiso.data)
+                    dispatch(setQueryResults(data));     
+                    handleCloseCreatePerm();
+                    dispatch(setValidateMessage(true, `Permiso: ${newPermiso.permType} creado con exito!`, 'success'));
+                }else {
+                    dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                    return;
+                }
+            }else {
+                dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                return;
+            }
+        }catch(err) {    
+            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            return;
+        };    
+    };
+
     const handleChangePerm = value => {
         setValue("permisos_app", value);
     };
@@ -127,7 +195,7 @@ const PermisosApp = () => {
             dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
             return;
         };
-    };    
+    };
 
     useEffect(() => {
         dispatch(cleanQueryResults());
@@ -170,7 +238,7 @@ const PermisosApp = () => {
                     <Alert className="w-100" variant={theme.style.bg}>
                         <div className={"d-md-inline-flex"}>
                             <Col className="mt-2" sm={10}><Button block type="submit" variant={theme.style.btnSuccess}>Consultar</Button></Col>
-                            <Col className="mt-2" sm={10}><Button block type="button" variant={theme.style.btnSuccess}>Crear Perm</Button></Col>
+                            <Col className="mt-2" sm={10}><Button block type="button" variant={theme.style.btnSuccess} onClick={() => handleShowCreatePerm()} >Crear Perm</Button></Col>
                         </div>
                     </Alert>                    
                 </Form>
@@ -193,6 +261,11 @@ const PermisosApp = () => {
                 handleClose={handleClose} 
                 delete={deletePerm}
             />
+            <SavePermisoComp
+                createPerm={createPerm} 
+                handleCloseCreatePerm={handleCloseCreatePerm} 
+                savePermiso={savePermiso}
+            />            
         </Fragment>
     );
 };

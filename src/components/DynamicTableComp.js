@@ -34,15 +34,16 @@ const DynamicTableComp = props => {
             if(key !== 'id') {
                 if(id === props.editId) {
                     if(!tableActions.hasOwnProperty(key)) {
+                        let name = `${key}_${id}`;
                         render.push(
                             <td key={`td_${id}_${key}`}>
                                 <Form.Control 
-                                    name={key}
+                                    name={name}
                                     type="text"
                                     defaultValue={val}
                                     ref={register({ required: true })} 
                                 />
-                                {errors[key] && <ErrorMessage message={`${key} no puede ser vacio`} />}
+                                {errors[name] && <ErrorMessage message={`${key} no puede ser vacio`} />}
                             </td>
                         );
                         elements--;

@@ -153,7 +153,7 @@ const ConsultaUsuarios = () => {
                         "user": element.user,
                         "name": element.name,
                         "appTheme": (element.config.appTheme) ? "Blue Theme" : "Black Theme",
-                        "permType": element.config.permId.permType,
+                        "permType": (element.config.permId) ? element.config.permId.permType : "No Perm",
                         "update": "update",
                         "delete": "delete",
                         "emptyPass": "emptyPass"

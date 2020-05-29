@@ -35,6 +35,8 @@ const URL_API_UPDATE_THEME = `${URL_API}usuarios/updateTheme/`;
 const URL_API_GET_PERMISOS = `${URL_API}permisos/getPermisos/`;
 const URL_API_UPDATE_PERMISO = `${URL_API}permisos/updatePermiso/`;
 const URL_API_GET_PERMISO_ID = `${URL_API}permisos/getPermisoById/`; 
+const URL_API_DELETE_PERMISO = `${URL_API}permisos/removePermiso/`;
+const URL_API_SAVE_PERMISO = `${URL_API}permisos/savePermiso/`;
 
 //Ingresos Simulado
 const URL_API_GET_MONTO_TOTAL_SIMULADO = `${URL_API}ingresosSimulado/getMontoTotalSimulado`;
@@ -76,6 +78,8 @@ const config = {
     URL_API_GET_PERMISOS,
     URL_API_UPDATE_PERMISO,
     URL_API_GET_PERMISO_ID,
+    URL_API_DELETE_PERMISO,
+    URL_API_SAVE_PERMISO,
     SERVER_ERR_COM
 };
 

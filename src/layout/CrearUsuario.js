@@ -73,41 +73,41 @@ const CrearUsuario = () => {
                 />
                 <Form noValidate onSubmit={handleSubmit(onSubmit)}>
                     <Form.Group as={Row} controlId="usuario">
-                            <Form.Label column sm={2}>Usuario</Form.Label>
-                            <Col sm={6}>
-                                <Form.Control 
-                                    name="usuario" 
-                                    type="text" 
-                                    placeholder="Usuario" 
-                                    ref={register({ required: true })} 
-                                />
-                                {errors.usuario && <ErrorMessage message={"Debe ingresar un usuario valido."} />}
-                            </Col>
-                        </Form.Group>     
-                        <Form.Group as={Row} controlId="nombre">
-                            <Form.Label column sm={2}>Nombre</Form.Label>
-                            <Col sm={6}>
-                                <Form.Control 
-                                    name="nombre" 
-                                    type="text" 
-                                    placeholder="Nombre" 
-                                    ref={register({ required: true })} 
-                                />
-                                {errors.nombre && <ErrorMessage message={"Debe ingresar un nombre valido."} />}
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} controlId="permisos_app">
-                            <Form.Label column sm={2}>Permisos App</Form.Label>
-                            <Col sm={6}>
-                                <Controller
-                                    as={<SelectPermComp handleChangePerm={handleChangePerm} />}
-                                    control={control}
-                                    name="permisos_app"
-                                    rules={{ required: true }}
-                                />
-                                {errors.permisos_app && <ErrorMessage message={"Debe seleccionar un tipo de permiso."} />}
-                            </Col>
-                        </Form.Group>                                         
+                        <Form.Label column sm={2}>Usuario</Form.Label>
+                        <Col sm={6}>
+                            <Form.Control 
+                                name="usuario" 
+                                type="text" 
+                                placeholder="Usuario" 
+                                ref={register({ required: true })} 
+                            />
+                            {errors.usuario && <ErrorMessage message={"Debe ingresar un usuario valido."} />}
+                        </Col>
+                    </Form.Group>     
+                    <Form.Group as={Row} controlId="nombre">
+                        <Form.Label column sm={2}>Nombre</Form.Label>
+                        <Col sm={6}>
+                            <Form.Control 
+                                name="nombre" 
+                                type="text" 
+                                placeholder="Nombre" 
+                                ref={register({ required: true })} 
+                            />
+                            {errors.nombre && <ErrorMessage message={"Debe ingresar un nombre valido."} />}
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} controlId="permisos_app">
+                        <Form.Label column sm={2}>Permisos App</Form.Label>
+                        <Col sm={6}>
+                            <Controller
+                                as={<SelectPermComp handleChangePerm={handleChangePerm} />}
+                                control={control}
+                                name="permisos_app"
+                                rules={{ required: true }}
+                            />
+                            {errors.permisos_app && <ErrorMessage message={"Debe seleccionar un tipo de permiso."} />}
+                        </Col>
+                    </Form.Group>                                         
                     <FormButtonsComp reset={reset} />
                 </Form>
             </Container>
