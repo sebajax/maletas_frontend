@@ -4,12 +4,14 @@ import MontoTotalSimuladoReducer from './MontoTotalSimuladoReducer';
 import HeaderReducer from './HeaderReducer';
 import ThemeReducer from './ThemeReducer';
 import QueryResultReducer from './QueryResultReducer';
+import PermisosReducer from './PermisosReducer';
 
 const appReducer = combineReducers({ 
     MontoTotalSimuladoReducer,
     HeaderReducer,
     ThemeReducer,
-    QueryResultReducer
+    QueryResultReducer,
+    PermisosReducer
 });
 
 const rootReducer = (state, action) => {

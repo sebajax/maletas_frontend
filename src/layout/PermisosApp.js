@@ -26,12 +26,14 @@ import QueryModalComp from '../components/QueryModalComp';
 */
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { setQueryResults, cleanQueryResults } from '../redux/actions/QueryResultActions';
+import { setPermisosReducer } from '../redux/actions/PermisosActions';
 
 const PermisosApp = () => {
 
     //Layout states
     const result = useSelector(state => state.QueryResultReducer);
     const theme = useSelector(state => state.ThemeReducer);
+    const permisos = useSelector(state => state.PermisosReducer);
     const [tbody, setTbody] = useState();
     const [editId, setEditId] = useState(null);
     const [show, setShow] = useState(false);
@@ -97,6 +99,11 @@ const PermisosApp = () => {
                 data = data.filter(obj => {
                     return obj._id !== show.id;
                 });
+                let refreshPermisos = Object.assign([], permisos);
+                refreshPermisos = refreshPermisos.filter(obj => {
+                    return obj._id !== show.id;
+                });
+                dispatch(setPermisosReducer(refreshPermisos));
                 dispatch(setQueryResults(data));
                 handleClose();
                 dispatch(setValidateMessage(true, res.data.message, 'success'));
@@ -131,12 +138,16 @@ const PermisosApp = () => {
                                     permType: data[`permType_${id}`].toLowerCase()
                                 }
                                 let response = await API.put(config.URL_API_UPDATE_PERMISO+id, updatedPermiso, config.API_TOKEN);
-                                dispatch(setValidateMessage(true, response.data.message, 'success'));
                                 let res = Object.assign([], result);
                                 let index = res.findIndex(element => element._id === id);
                                 res[index].permType = updatedPermiso.permType;
+                                let refreshPermisos = Object.assign([], permisos);
+                                let indexPerm = refreshPermisos.findIndex(element => element._id === id);
+                                refreshPermisos[indexPerm].permType = updatedPermiso.permType;
+                                dispatch(setPermisosReducer(refreshPermisos));
                                 dispatch(setQueryResults(res));
                                 setEditId(null);
+                                dispatch(setValidateMessage(true, response.data.message, 'success'));
                             }else {
                                 dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
                                 return;
@@ -167,7 +178,10 @@ const PermisosApp = () => {
                 if(newPermiso) {
                     let data = Object.assign([], result);
                     data.push(newPermiso.data)
-                    dispatch(setQueryResults(data));     
+                    dispatch(setQueryResults(data));   
+                    let refreshPermisos = Object.assign([], permisos);
+                    refreshPermisos.push(newPermiso.data);
+                    dispatch(setPermisosReducer(refreshPermisos));
                     handleCloseCreatePerm();
                     dispatch(setValidateMessage(true, `Permiso: ${newPermiso.permType} creado con exito!`, 'success'));
                 }else {

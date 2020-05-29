@@ -1,0 +1,1 @@
+export const SET_PERMISOS = "SET_PERMISOS";
