@@ -1,11 +1,11 @@
+// Node Modules imports
 import React from 'react';
 import { Button, Col, Alert } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 const FormButtonsComp = props => {
-
     const theme = useSelector(state => state.ThemeReducer);
-
+    
     return (
         <Alert className="w-100" variant={theme.style.bg}>
             <div className={"d-flex flex-row-reverse"}>

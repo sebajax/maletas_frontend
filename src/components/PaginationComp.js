@@ -1,11 +1,10 @@
+// Node Modules imports
 import React, { Fragment } from 'react';
 import Pagination from 'react-bootstrap/Pagination'
 import { useSelector } from 'react-redux';
 
 const PaginationComp = props => {
-    
     const result = useSelector(state => state.QueryResultReducer);
-
     const totalPages = (result) ? result.totalPages : 1;
     const page = (result) ? result.page : 1;
     const pageEllipsis = 8;

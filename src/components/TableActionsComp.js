@@ -1,3 +1,4 @@
+// Node Modules imports
 import React, { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faUnlock, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -5,7 +6,6 @@ import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 const TableActionsComp = props => {
-
     const theme = useSelector(state => state.ThemeReducer);
     const id = props.tableActions.id;
 

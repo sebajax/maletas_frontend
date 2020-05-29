@@ -1,4 +1,4 @@
-import config from './Config';
+import { URL_API } from './ConfigApi';
 
 const axios = require('axios');
 const http = require('http');
@@ -6,7 +6,7 @@ const https = require('https');
 
  export default axios.create({
 
-    baseUrl: config.URL_API,
+    baseUrl: URL_API,
 
     //60 sec timeout
     timeout: 60000,

@@ -1,16 +1,19 @@
+// Node Modules imports
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Button, Form, Alert, Col } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
+
+// COMPONENT imports
 import ErrorMessage from '../components/ErrorMessage';
 
 const SavePermisoComp = props => {
+    const theme = useSelector(state => state.ThemeReducer);
+
     const { register, handleSubmit, errors } = useForm({
         mode: 'onChange',
     });
-
-    const theme = useSelector(state => state.ThemeReducer);
 
     const onSubmit = (data, e) => {
         e.preventDefault();

@@ -1,14 +1,16 @@
+// Node Modules imports
 import React, { Fragment } from 'react';
 import { Table, Form, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import TableActionsComp from '../components/TableActionsComp';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faWindowClose } from '@fortawesome/free-solid-svg-icons';
-import ErrorMessage from '../components/ErrorMessage';
 import { useForm } from "react-hook-form";
 
+// COMPONENT imports
+import ErrorMessage from '../components/ErrorMessage';
+import TableActionsComp from '../components/TableActionsComp';
+
 const DynamicTableComp = props => {
-    
     const theme = useSelector(state => state.ThemeReducer);
     
     const { register, handleSubmit, errors } = useForm({

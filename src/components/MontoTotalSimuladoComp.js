@@ -1,16 +1,16 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import CurrencyFormat from 'react-currency-format';
 import { useSelector, useDispatch } from 'react-redux';
-import API from '../config/API';
-import config from '../config/Config';
 
-/*
-* REDUX Actions imports
-*/
+// Config
+import API from '../config/API';
+import { API_TOKEN } from '../config/ConfigToken';
+import { URL_API_GET_MONTO_TOTAL_SIMULADO } from '../config/ConfigApiIngresosSimulado';
+import { ERROR_SOLICITUD } from '../config/Messages';
+
+// REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { initMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
 
@@ -23,11 +23,11 @@ const MontoTotalSimuladoComp = () => {
     useEffect(() => {
         const getMontoTotalSimulado = async () => {
             try {
-                let res = await API.get(config.URL_API_GET_MONTO_TOTAL_SIMULADO, config.API_TOKEN)
+                let res = await API.get(URL_API_GET_MONTO_TOTAL_SIMULADO, API_TOKEN)
                 if(res.data.monto)
                     dispatch(initMontoTotalSimulado(res.data.monto));
             }catch(err) {
-                dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`)); 
+                dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`)); 
             };
         };
         getMontoTotalSimulado();

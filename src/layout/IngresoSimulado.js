@@ -1,21 +1,17 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Col, Row, InputGroup } from 'react-bootstrap';
 import { useForm, Controller } from "react-hook-form";
-import API from '../config/API';
-import config from '../config/Config';
 import Validate from 'validate.js';
-/*
-* REDUX Actions imports
-*/
-import { setMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
-import { setValidateMessage } from '../redux/actions/HeaderActions';
-/*
-* COMPONENT imports
-*/
+
+// Config
+import API from '../config/API';
+import { API_TOKEN } from '../config/ConfigToken';
+import { SUCCESS, ERROR_SOLICITUD } from '../config/Messages';
+import { URL_API_SAVE_INGRESO_SIMULADO } from '../config/ConfigApiIngresosSimulado';
+
+// COMPONENT imports
 import HeaderComp from '../components/HeaderComp';
 import MontoTotalSimuladoComp from '../components/MontoTotalSimuladoComp';
 import DatePickerComp from '../components/DatePickerComp';
@@ -23,14 +19,15 @@ import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
 import ErrorMessage from '../components/ErrorMessage';
 
+// REDUX Actions imports
+import { setMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
+import { setValidateMessage } from '../redux/actions/HeaderActions';
+
 const IngresoSimulado = () => {
-    //INI: States
     const dispatch = useDispatch();
     const [startDate, setStartDate] = useState(null);
-    
     let title = "Ingreso Simulado";
     let navItems = ["Menu Simulado", title];
-    //END: States
     
     const { register, handleSubmit, errors, setValue, control, reset } = useForm({
         mode: 'onChange',
@@ -40,13 +37,13 @@ const IngresoSimulado = () => {
         e.preventDefault();
         data.fecha = data.fecha.toISOString().slice(0, 19).replace('T', ' ');
         try {
-            const res = await API.post(config.URL_API_SAVE_INGRESO_SIMULADO, {data}, config.API_TOKEN);
+            const res = await API.post(URL_API_SAVE_INGRESO_SIMULADO, {data}, API_TOKEN);
             e.target.reset();
             dispatch(setMontoTotalSimulado(res.data.monto));
             setStartDate(null);
-            dispatch(setValidateMessage(true, `Monto agregado al total: ${res.data.monto}`, 'success'));
+            dispatch(setValidateMessage(true, `Monto agregado al total: ${res.data.monto}`, SUCCESS));
         }catch(err) {    
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
         };
     };
 

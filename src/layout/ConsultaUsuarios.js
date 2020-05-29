@@ -1,20 +1,25 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Form, Col, Spinner } from 'react-bootstrap';
-import API from '../config/API';
-import config from '../config/Config';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from "react-hook-form";
 import Validate from 'validate.js';
-/*
-* HOOKS imports
-*/
+
+// Config
+import API from '../config/API';
+import { API_TOKEN } from '../config/ConfigToken';
+import { SUCCESS, ERROR_SOLICITUD } from '../config/Messages';
+import {
+    URL_API_GET_USUARIOS,
+    URL_API_DELETE_USUARIO,
+    URL_API_GET_USUARIO_ID,
+
+} from '../config/ConfigApiUsuarios';
+
+// HOOKS imports
 import useQueryApi from '../hooks/QueryApiHook';
-/*
-* COMPONENT imports
-*/
+
+// COMPONENT imports
 import MenuItemComp from '../components/MenuItemsComp';
 import QueryButtonsComp from '../components/QueryButtonsComp';
 import HeaderComp from '../components/HeaderComp';
@@ -22,23 +27,22 @@ import SelectPermComp from '../components/SelectPermComp';
 import DynamicTableComp from '../components/DynamicTableComp';
 import QueryModalComp from '../components/QueryModalComp';
 import PaginationComp from '../components/PaginationComp';
-/*
-* REDUX Actions imports
-*/
+
+// REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { setQueryResults, cleanQueryResults } from '../redux/actions/QueryResultActions';
 
 const ConsultaUsuarios = () => {
-    //Layout states
     const dispatch = useDispatch();    
     const result = useSelector(state => state.QueryResultReducer);
     const [tbody, setTbody] = useState();
     const [show, setShow] = useState(false);
     
     const [{isLoading}, {setQuery, setUrl}] = useQueryApi();
-    const url = `${config.URL_API_GET_USUARIOS}1`
+    const url = `${URL_API_GET_USUARIOS}1`
     let title = "Consulta Usuarios";
     let navItems = ["Admin", title];
+    const USUARIO_INEXISTENTE = "Usuario inexistente";
 
     //Modal actions
     const handleClose = () => setShow({
@@ -62,9 +66,7 @@ const ConsultaUsuarios = () => {
         "V.Clave"
     ];
 
-    const handlePage = clickedPage => {
-        setUrl(`${config.URL_API_GET_USUARIOS}${clickedPage}`);
-    };
+    const handlePage = clickedPage => setUrl(`${URL_API_GET_USUARIOS}${clickedPage}`);
 
     const onSubmit = async (data, e) => {
         e.preventDefault();
@@ -85,18 +87,18 @@ const ConsultaUsuarios = () => {
             if(res) {
                 return handleShow(id);
             }else {
-                dispatch(setValidateMessage(true, `Usuario inexistente`));
+                dispatch(setValidateMessage(true, USUARIO_INEXISTENTE));
                 return;                
             }
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
             return;
         }
     };
 
     const deleteUsuario = async () => {
         try {
-            let res = await API.delete(config.URL_API_DELETE_USUARIO+show.id, config.API_TOKEN);     
+            let res = await API.delete(URL_API_DELETE_USUARIO+show.id, API_TOKEN);     
             if(res) {
                 let data = Object.assign({}, result);
                 data.docs = data.docs.filter(obj => {
@@ -104,13 +106,13 @@ const ConsultaUsuarios = () => {
                 });
                 dispatch(setQueryResults(data));
                 handleClose();
-                dispatch(setValidateMessage(true, res.data.message, 'success'));
+                dispatch(setValidateMessage(true, res.data.message, SUCCESS));
             }else {
-                dispatch(setValidateMessage(true, `Usuario inexistente`));
+                dispatch(setValidateMessage(true, USUARIO_INEXISTENTE));
                 return;
             }
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
             return;
         };    
     };
@@ -129,16 +131,14 @@ const ConsultaUsuarios = () => {
 
     const getUsuarioInfo = async id => {
         try {
-            return await API.get(config.URL_API_GET_USUARIO_ID+id, config.API_TOKEN);
+            return await API.get(URL_API_GET_USUARIO_ID+id, API_TOKEN);
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
             return;
         };
     };
 
-    const handleChangePerm = value => {
-        setValue("permisos_app", value);
-    }
+    const handleChangePerm = value => setValue("permisos_app", value);
 
     useEffect(() => {
         dispatch(cleanQueryResults());
@@ -153,7 +153,7 @@ const ConsultaUsuarios = () => {
                         "user": element.user,
                         "name": element.name,
                         "appTheme": (element.config.appTheme) ? "Blue Theme" : "Black Theme",
-                        "permType": (element.config.permId) ? element.config.permId.permType : "No Perm",
+                        "permType": (Validate.isDefined(element.config.permId)) ? element.config.permId.permType : "No Perm",
                         "update": "update",
                         "delete": "delete",
                         "emptyPass": "emptyPass"

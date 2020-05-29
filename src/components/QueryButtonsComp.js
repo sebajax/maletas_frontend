@@ -1,9 +1,9 @@
+// Node Modules imports
 import React, { Fragment } from 'react';
 import { Alert, Col, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 const QueryButtonsComp = () => {
-
     const theme = useSelector(state => state.ThemeReducer);
 
     return (

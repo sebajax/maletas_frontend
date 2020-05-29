@@ -1,5 +1,8 @@
+// Node Modules imports
 import React from 'react';
 import { Modal } from 'react-bootstrap';
+
+// COMPONENT imports
 import FormButtonsComp from './FormButtonsComp';
 
 const CambiarClaveModalComp = props => {

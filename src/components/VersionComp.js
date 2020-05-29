@@ -1,4 +1,7 @@
+// Node Modules imports
 import React from 'react';
+
+// Config
 import version from '../config/Version';
 
 const VersionComp = () => (

@@ -1,8 +1,11 @@
+// Node Modules imports
 import React from 'react';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from  "react-datepicker";
 import es from 'date-fns/locale/es';
+
+// CSS
+import "react-datepicker/dist/react-datepicker.css";
 
 registerLocale('es', es);
 

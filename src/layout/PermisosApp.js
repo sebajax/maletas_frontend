@@ -1,36 +1,41 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Form, Col, Spinner, Alert, Button } from 'react-bootstrap';
-import API from '../config/API';
-import config from '../config/Config';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from "react-hook-form";
 import Validate from 'validate.js';
-/*
-* HOOKS imports
-*/
+
+// Config
+import API from '../config/API';
+import { API_TOKEN } from '../config/ConfigToken';
+import { SUCCESS, ERROR_SOLICITUD } from '../config/Messages';
+import {
+    URL_API_GET_PERMISOS,
+    URL_API_DELETE_PERMISO,
+    URL_API_UPDATE_PERMISO,
+    URL_API_SAVE_PERMISO,
+    URL_API_GET_PERMISO_ID
+
+} from '../config/ConfigApiPermisos';
+
+// HOOKS imports
 import useQueryApi from '../hooks/QueryApiHook';
-/*
-* COMPONENT imports
-*/
+
+// COMPONENT imports
 import MenuItemComp from '../components/MenuItemsComp';
 import HeaderComp from '../components/HeaderComp';
 import SelectPermComp from '../components/SelectPermComp';
 import DynamicTableComp from '../components/DynamicTableComp';
 import SavePermisoComp from '../components/SavePermisoComp';
 import QueryModalComp from '../components/QueryModalComp';
-/*
-* REDUX Actions imports
-*/
+
+// REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { setQueryResults, cleanQueryResults } from '../redux/actions/QueryResultActions';
 import { setPermisosReducer } from '../redux/actions/PermisosActions';
 
 const PermisosApp = () => {
-
-    //Layout states
+    const dispatch = useDispatch();
     const result = useSelector(state => state.QueryResultReducer);
     const theme = useSelector(state => state.ThemeReducer);
     const permisos = useSelector(state => state.PermisosReducer);
@@ -39,9 +44,7 @@ const PermisosApp = () => {
     const [show, setShow] = useState(false);
     const [createPerm, setCreatePerm] = useState(false);
 
-    const dispatch = useDispatch();
     const [{isLoading}, {setQuery, setUrl}] = useQueryApi();
-
     const { handleSubmit, control, setValue } = useForm();
 
     let title = "Permisos App";
@@ -72,7 +75,7 @@ const PermisosApp = () => {
         if(data.permisos_app) 
             query.permId = data.permisos_app;
         
-        setUrl(config.URL_API_GET_PERMISOS);
+        setUrl(URL_API_GET_PERMISOS);
         setQuery(query);
     };
 
@@ -86,14 +89,14 @@ const PermisosApp = () => {
                 return;
             }
         }else {
-            dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${ERROR_SOLICITUD}`));
             return;
         }
     };
 
     const deletePerm = async () => {
         try {
-            let res = await API.delete(config.URL_API_DELETE_PERMISO+show.id, config.API_TOKEN);     
+            let res = await API.delete(URL_API_DELETE_PERMISO+show.id, API_TOKEN);     
             if(res) {
                 let data = Object.assign([], result);
                 data = data.filter(obj => {
@@ -106,24 +109,19 @@ const PermisosApp = () => {
                 dispatch(setPermisosReducer(refreshPermisos));
                 dispatch(setQueryResults(data));
                 handleClose();
-                dispatch(setValidateMessage(true, res.data.message, 'success'));
+                dispatch(setValidateMessage(true, res.data.message, SUCCESS));
             }else {
                 dispatch(setValidateMessage(true, `Permiso inexistente`));
                 return;
             }
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
             return;
         };  
     }
 
-    const handleUpdate = async id => {
-        setEditId(id);
-    };
-
-    const updateCancel = () => {
-        setEditId(null);
-    }
+    const handleUpdate = async id => setEditId(id);
+    const updateCancel = () => setEditId(null);
 
     const onUpdate = async (data, id) => {
         if(data) {
@@ -137,7 +135,7 @@ const PermisosApp = () => {
                                 let updatedPermiso = {
                                     permType: data[`permType_${id}`].toLowerCase()
                                 }
-                                let response = await API.put(config.URL_API_UPDATE_PERMISO+id, updatedPermiso, config.API_TOKEN);
+                                let response = await API.put(URL_API_UPDATE_PERMISO+id, updatedPermiso, API_TOKEN);
                                 let res = Object.assign([], result);
                                 let index = res.findIndex(element => element._id === id);
                                 res[index].permType = updatedPermiso.permType;
@@ -147,9 +145,9 @@ const PermisosApp = () => {
                                 dispatch(setPermisosReducer(refreshPermisos));
                                 dispatch(setQueryResults(res));
                                 setEditId(null);
-                                dispatch(setValidateMessage(true, response.data.message, 'success'));
+                                dispatch(setValidateMessage(true, response.data.message, SUCCESS));
                             }else {
-                                dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                                dispatch(setValidateMessage(true, `${ERROR_SOLICITUD}`));
                                 return;
                             }
                         }else {
@@ -157,7 +155,7 @@ const PermisosApp = () => {
                             return;
                         }
                     }else {
-                        dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                        dispatch(setValidateMessage(true, `${ERROR_SOLICITUD}`));
                         return;
                     }
                 }catch(err) {
@@ -174,7 +172,7 @@ const PermisosApp = () => {
                 let reqPerm = {
                     permType: permiso.permType.toLowerCase()
                 }
-                let newPermiso = await API.post(config.URL_API_SAVE_PERMISO, reqPerm, config.API_TOKEN);
+                let newPermiso = await API.post(URL_API_SAVE_PERMISO, reqPerm, API_TOKEN);
                 if(newPermiso) {
                     let data = Object.assign([], result);
                     data.push(newPermiso.data)
@@ -185,28 +183,26 @@ const PermisosApp = () => {
                     handleCloseCreatePerm();
                     dispatch(setValidateMessage(true, `Permiso: ${newPermiso.permType} creado con exito!`, 'success'));
                 }else {
-                    dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                    dispatch(setValidateMessage(true, `${ERROR_SOLICITUD}`));
                     return;
                 }
             }else {
-                dispatch(setValidateMessage(true, `${config.ERROR_SOLICITUD}`));
+                dispatch(setValidateMessage(true, `${ERROR_SOLICITUD}`));
                 return;
             }
         }catch(err) {    
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
             return;
         };    
     };
 
-    const handleChangePerm = value => {
-        setValue("permisos_app", value);
-    };
+    const handleChangePerm = value => setValue("permisos_app", value);
 
     const getPermisoInfo = async id => {
         try {
-            return await API.get(config.URL_API_GET_PERMISO_ID+id, config.API_TOKEN);
+            return await API.get(URL_API_GET_PERMISO_ID+id, API_TOKEN);
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
             return;
         };
     };

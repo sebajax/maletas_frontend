@@ -1,6 +1,4 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSuitcaseRolling, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
@@ -8,30 +6,29 @@ import { Navbar, Nav, NavDropdown, Form, Button, OverlayTrigger, Tooltip } from 
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from "react-router-dom";
+
+// Config
 import config from '../config/Config';
-import Cookies from 'universal-cookie';
+import { API_TOKEN, cookies } from '../config/ConfigToken';
 import API from '../config/API';
-/*
-* REDUX Actions imports
-*/
-import { changeTheme } from '../redux/actions/ThemeActions';
-import { setValidateMessage } from '../redux/actions/HeaderActions';
-/*
-* COMPONENT imports
-*/
+import { SERVER_ERR_COM } from '../config/Messages';
+import { URL_API_UPDATE_THEME } from '../config/ConfigApiUsuarios';
+
+// COMPONENT imports
 import CambiarClaveModalComp from './CambiarClaveModalComp';
 
+// REDUX Actions imports
+import { changeTheme } from '../redux/actions/ThemeActions';
+import { setValidateMessage } from '../redux/actions/HeaderActions';
+
 const MenuItemComp = props => {
-    
+    const dispatch = useDispatch();
+    const theme = useSelector(state => state.ThemeReducer);
     const history = useHistory();
-    const cookies = new Cookies();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
   
-    const dispatch = useDispatch();
-    const theme = useSelector(state => state.ThemeReducer);
-
     const handleSignOut = () => {
         cookies.remove('jwtToken', '/');
         sessionStorage.clear();
@@ -44,10 +41,10 @@ const MenuItemComp = props => {
             "appTheme": (theme.theme) ? false : true,
         };
         try {
-            await API.put(config.URL_API_UPDATE_THEME+sessionStorage.getItem('userId'), {data}, config.API_TOKEN);
+            await API.put(URL_API_UPDATE_THEME+sessionStorage.getItem('userId'), {data}, API_TOKEN);
             dispatch(changeTheme());
         }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${config.SERVER_ERR_COM}`)); 
+            dispatch(setValidateMessage(true, `${err} ${SERVER_ERR_COM}`)); 
         };
     };
 

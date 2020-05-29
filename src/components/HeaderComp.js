@@ -1,20 +1,22 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment } from 'react';
 import { Alert, Form } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import Validate from 'validate.js';
-/*
-* REDUX Actions imports
-*/
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+
+// Config
+import { SUCCESS } from '../config/Messages';
+
+// COMPONENT imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 
 const HeaderComp = props => {
-    
     const dispatch = useDispatch();
     let validate = useSelector(state => state.HeaderReducer);
     let theme = useSelector(state => state.ThemeReducer);
+    
     let navItems = (Validate.isDefined(props.navItems)) ? true : false; 
     let title = (Validate.isDefined(props.title)) ? true : false; 
     let listItems = "";
@@ -49,7 +51,16 @@ const HeaderComp = props => {
             }
             {title ? <h3 className="text-primary mb-4">{props.title}</h3> : ""}
             {validate.valid && 
-                <Alert variant={validate.variant} onClose={() => dispatch(setValidateMessage())} dismissible> {validate.message} </Alert>
+                <Fragment>
+                    <Alert variant={validate.variant} onClose={() => dispatch(setValidateMessage())} dismissible> 
+                        {validate.variant === SUCCESS ? 
+                            <FontAwesomeIcon icon={faCheckCircle} /> 
+                        : 
+                            <FontAwesomeIcon icon={faExclamationCircle} />
+                        }
+                        <span className="ml-1"> {validate.message} </span>
+                    </Alert>
+                </Fragment>
             }
 
         </Fragment>

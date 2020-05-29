@@ -1,27 +1,26 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment } from 'react';
 import { Container, Form, Col, Row } from 'react-bootstrap';
 import { useForm, Controller } from "react-hook-form";
-import API from '../config/API';
-import config from '../config/Config';
 import { useDispatch } from 'react-redux';
-/*
-* REDUX Actions imports
-*/
-import { setValidateMessage } from '../redux/actions/HeaderActions';
-/*
-* COMPONENT imports
-*/
+
+// Config
+import API from '../config/API';
+import { API_TOKEN } from '../config/ConfigToken';
+import { SUCCESS, ERROR_SOLICITUD } from '../config/Messages';
+import { URL_API_SAVE_USUARIO } from '../config/ConfigApiUsuarios';
+
+// COMPONENT imports
 import HeaderComp from '../components/HeaderComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
 import ErrorMessage from '../components/ErrorMessage';
 import SelectPermComp from '../components/SelectPermComp';
 
-const CrearUsuario = () => {
+// REDUX Actions imports
+import { setValidateMessage } from '../redux/actions/HeaderActions';
 
+const CrearUsuario = () => {
     const dispatch = useDispatch();
     let title = "Crear Usuario";
     let navItems = ["Admin", title];
@@ -45,23 +44,21 @@ const CrearUsuario = () => {
                 }  
             };
         }else {
-            dispatch(setValidateMessage(true, config.ERROR_SOLICITUD));
+            dispatch(setValidateMessage(true, ERROR_SOLICITUD));
             return;
         }
 
         try {
-            await API.post(config.URL_API_SAVE_USUARIO, req, config.API_TOKEN);
+            await API.post(URL_API_SAVE_USUARIO, req, API_TOKEN);
             e.target.reset();
             setValue("permisos_app", "");
-            dispatch(setValidateMessage(true, `Usuario: ${data.usuario} creado con exito!`, 'success'));
+            dispatch(setValidateMessage(true, `Usuario: ${data.usuario} creado con exito!`, SUCCESS));
         }catch(err) {    
-            dispatch(setValidateMessage(true, `${err} ${config.ERROR_SOLICITUD}`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
         };        
     };
 
-    const handleChangePerm = (value) => {
-        setValue("permisos_app", value, true);
-    }
+    const handleChangePerm = (value) => setValue("permisos_app", value, true);
 
     return (
         <Fragment>

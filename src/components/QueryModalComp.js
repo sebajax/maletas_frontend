@@ -1,10 +1,10 @@
+// Node Modules imports
 import React from 'react';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Button, Col, Alert } from 'react-bootstrap';
 
 const QueryModalComp = props => {
-
     const theme = useSelector(state => state.ThemeReducer);
 
     return (

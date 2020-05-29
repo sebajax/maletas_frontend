@@ -1,14 +1,10 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, { Fragment } from 'react';
 import { Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLuggageCart } from '@fortawesome/free-solid-svg-icons';
 
-/*
-* COMPONENT imports
-*/
+// COMPONENT imports
 import VersionComp from '../components/VersionComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import HeaderComp from '../components/HeaderComp';

@@ -1,28 +1,30 @@
-/*
-* Node Modules imports
-*/
+// Node Modules imports
 import React, {Fragment} from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Button, Alert, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLuggageCart, faSuitcaseRolling, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+
+// Config
 import API from '../config/API';
 import config from '../config/Config';
+import { URL_API_LOGIN } from '../config/ConfigApi';
+import version from '../config/Version';
+import { cookies } from '../config/ConfigToken';
+import { ERROR_ACCESO } from '../config/Messages';
+
+// REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 import { setTheme } from '../redux/actions/ThemeActions';
-import { useHistory } from "react-router-dom";
-import version from '../config/Version';
-import Cookies from 'universal-cookie';
-/*
-* COMPONENT imports
-*/
+
+// COMPONENT imports
 import HeaderComp from '../components/HeaderComp';
 import ErrorMessage from '../components/ErrorMessage';
 
 const Login = () => {
 
-    const cookies = new Cookies();
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -33,7 +35,7 @@ const Login = () => {
     const onSubmit = async (data, e) => {
         e.preventDefault();
         try {
-            const response = await API.get(config.URL_API_LOGIN, {
+            const response = await API.get(URL_API_LOGIN, {
                 auth: {
                     username: data.usuario,
                     password: data.password
@@ -49,10 +51,10 @@ const Login = () => {
                 dispatch(setValidateMessage());
                 history.push(config.URL_MENU_PRINCIPAL);
             }else {
-                dispatch(setValidateMessage(true, `Datos de acceso incorrecto.`));
+                dispatch(setValidateMessage(true, ERROR_ACCESO));
             }
         }catch(err) {
-            dispatch(setValidateMessage(true, `Datos de acceso incorrecto.`));
+            dispatch(setValidateMessage(true, `${err} ${ERROR_ACCESO}`));
         } 
     };
 
