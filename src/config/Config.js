@@ -1,18 +1,23 @@
 /*
     CONST URL REACT FRONT END
 */
+// PermType - Global
 const URL = 'http://localhost:3000';
-const URL_LOGIN = '/Login';
-const URL_MENU_PRINCIPAL = '/MenuPrincipal';
-const URL_INGRESO_SIMULADO = '/IngresoSimulado';
-const URL_GASTO_SIMULADO = '/GastoSimulado';
-const URL_CREAR_USUARIO = '/CrearUsuario';
-const URL_CONSULTA_USUARIOS = '/ConsultaUsuarios';
-const URL_PERMISOS_APP = '/PermisosApp';
+
+// Home
+const URL_MENU_PRINCIPAL = 'MenuPrincipal';
+
+// Simulado
+const URL_INGRESO_SIMULADO = 'IngresoSimulado';
+const URL_GASTO_SIMULADO = 'GastoSimulado';
+
+// Admin
+const URL_CREAR_USUARIO = 'CrearUsuario';
+const URL_CONSULTA_USUARIOS = 'ConsultaUsuarios';
+const URL_PERMISOS_APP = 'PermisosApp';
 
 const config = {
     URL,
-    URL_LOGIN,
     URL_MENU_PRINCIPAL,
     URL_INGRESO_SIMULADO,
     URL_GASTO_SIMULADO,

@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 
 // Config
 import API from '../config/API';
-import config from '../config/Config';
+import ROUTES from '../config/Routes';
 import { URL_API_LOGIN } from '../config/ConfigApi';
 import version from '../config/Version';
 import { cookies } from '../config/ConfigToken';
@@ -24,7 +24,6 @@ import HeaderComp from '../components/HeaderComp';
 import ErrorMessage from '../components/ErrorMessage';
 
 const Login = () => {
-
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -49,7 +48,7 @@ const Login = () => {
                 sessionStorage.setItem("permType", response.data.permType);
                 dispatch(setTheme(response.data.appTheme));
                 dispatch(setValidateMessage());
-                history.push(config.URL_MENU_PRINCIPAL);
+                history.push(ROUTES.PATH_HOME);
             }else {
                 dispatch(setValidateMessage(true, ERROR_ACCESO));
             }

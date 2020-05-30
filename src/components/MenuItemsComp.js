@@ -8,11 +8,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from "react-router-dom";
 
 // Config
-import config from '../config/Config';
+import ROUTES from '../config/Routes';
 import { API_TOKEN, cookies } from '../config/ConfigToken';
 import API from '../config/API';
 import { SERVER_ERR_COM } from '../config/Messages';
 import { URL_API_UPDATE_THEME } from '../config/ConfigApiUsuarios';
+import modules from '../config/Modules';
 
 // COMPONENT imports
 import CambiarClaveModalComp from './CambiarClaveModalComp';
@@ -51,24 +52,24 @@ const MenuItemComp = props => {
     return (
         <Fragment>
             <Navbar collapseOnSelect bg={theme.style.bg} expand="md" variant={theme.style.variant}>
-                <Navbar.Brand className={theme.style.text} as={Link} to={config.URL_MENU_PRINCIPAL}>
+                <Navbar.Brand className={theme.style.text} as={Link} to={ROUTES.PATH_HOME}>
                     <FontAwesomeIcon icon={faSuitcaseRolling} size="2x" />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="menu-items">
                     <Nav className="mr-auto">
-                        <NavDropdown active={props.eventKey === 1 ? true : false} title="Simulacion" id="nav-dropdown-simulacion">
-                            <NavDropdown.Item id="IngresoSimulado" as={Link} to={config.URL_INGRESO_SIMULADO}> Ingreso Simulado</NavDropdown.Item>
+                        <NavDropdown active={props.eventKey === 1 ? true : false} title={modules.SIMULACION} id="nav-dropdown-simulacion">
+                            <NavDropdown.Item id="IngresoSimulado" as={Link} to={ROUTES.PATH_SIMULACION_INGRESO_SIMULADO}> Ingreso Simulado</NavDropdown.Item>
                             <NavDropdown.Item id="GastoSimulado"> Gasto Simulado </NavDropdown.Item>
                             <NavDropdown.Item id="ConsultaSimulado"> Consulta Simulado </NavDropdown.Item>
-                        </NavDropdown>     
-                        <NavDropdown active={props.eventKey === 2 ? true : false} title="Admin" id="nav-dropdown-admin">
-                            <NavDropdown.Item id="CrearUsuario" as={Link} to={config.URL_CREAR_USUARIO}> Crear Usuario</NavDropdown.Item>
-                            <NavDropdown.Item id="ConsultaUsuarios" as={Link} to={config.URL_CONSULTA_USUARIOS}> Consulta Usuarios </NavDropdown.Item>
-                            <NavDropdown.Item id="PermisosApp" as={Link} to={config.URL_PERMISOS_APP}> Permisos App </NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown active={props.eventKey === 2 ? true : false} title={modules.ADMIN} id="nav-dropdown-admin">
+                            <NavDropdown.Item id="CrearUsuario" as={Link} to={ROUTES.PATH_ADMIN_CREAR_USUARIO}> Crear Usuario</NavDropdown.Item>
+                            <NavDropdown.Item id="ConsultaUsuarios" as={Link} to={ROUTES.PATH_ADMIN_CONSULTA_USUARIOS}> Consulta Usuarios </NavDropdown.Item>
+                            <NavDropdown.Item id="PermisosApp" as={Link} to={ROUTES.PATH_ADMIN_PERMISOS_APP}> Permisos App </NavDropdown.Item>
                             <NavDropdown.Item id="AsignarPermisos"> Asignar Permisos </NavDropdown.Item>
                             <NavDropdown.Item id="AppLogs"> App Logs </NavDropdown.Item>
-                        </NavDropdown>                                 
+                        </NavDropdown>
                     </Nav>
                     <OverlayTrigger
                         key="user_trigger_bottom"
