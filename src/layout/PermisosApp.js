@@ -31,7 +31,7 @@ import QueryModalComp from '../components/QueryModalComp';
 
 // REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
-import { setQueryResults, cleanQueryResults } from '../redux/actions/QueryResultActions';
+import { cleanQueryResults, setQueryResults } from '../redux/actions/QueryResultActions';
 import { setPermisosReducer } from '../redux/actions/PermisosActions';
 
 const PermisosApp = () => {
@@ -181,7 +181,7 @@ const PermisosApp = () => {
                     refreshPermisos.push(newPermiso.data);
                     dispatch(setPermisosReducer(refreshPermisos));
                     handleCloseCreatePerm();
-                    dispatch(setValidateMessage(true, `Permiso: ${newPermiso.permType} creado con exito!`, 'success'));
+                    dispatch(setValidateMessage(true, `Permiso: ${newPermiso.data.permType} creado con exito!`, 'success'));
                 }else {
                     dispatch(setValidateMessage(true, `${ERROR_SOLICITUD}`));
                     return;
@@ -209,21 +209,20 @@ const PermisosApp = () => {
 
     useEffect(() => {
         dispatch(cleanQueryResults());
+        dispatch(setQueryResults([]));
     }, [dispatch]);
 
     useEffect(() => {
         if(Validate.isDefined(result)) {
-            if(Validate.isDefined(result.map)) {
-                let body = result.map(element => {
-                    return {
-                        "id": element._id,
-                        "permType": element.permType,
-                        "update": "update",
-                        "delete": "delete",
-                    };
-                });
-                setTbody(body);
-            }
+            let body = result.map(element => {
+                return {
+                    "id": element._id,
+                    "permType": element.permType,
+                    "update": "update",
+                    "delete": "delete",
+                };
+            });
+            setTbody(body);
         }
     }, [result]);
 

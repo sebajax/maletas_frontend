@@ -142,6 +142,7 @@ const ConsultaUsuarios = () => {
 
     useEffect(() => {
         dispatch(cleanQueryResults());
+        dispatch(setQueryResults([]));
     }, [dispatch]);
 
     useEffect(() => {
@@ -207,6 +208,6 @@ const ConsultaUsuarios = () => {
             />
         </Fragment>
     );
-}
+};
 
 export default ConsultaUsuarios;

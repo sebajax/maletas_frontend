@@ -15,6 +15,7 @@ const URL_GASTO_SIMULADO = 'GastoSimulado';
 const URL_CREAR_USUARIO = 'CrearUsuario';
 const URL_CONSULTA_USUARIOS = 'ConsultaUsuarios';
 const URL_PERMISOS_APP = 'PermisosApp';
+const URL_ASIGNA_MODULOS_PERM = 'AsignaModulosPerm';
 
 const config = {
     URL,
@@ -24,6 +25,7 @@ const config = {
     URL_CREAR_USUARIO,
     URL_CONSULTA_USUARIOS,
     URL_PERMISOS_APP,
+    URL_ASIGNA_MODULOS_PERM
 };
 
 export default config;

@@ -29,7 +29,8 @@ const DynamicTableComp = props => {
             "id": id,
             "update": false, 
             "delete": false,
-            "emptyPass": false
+            "emptyPass": false,
+            "authModule": false
         };
        
         for(let[key, val] of Object.entries(tdMap)) {
@@ -61,6 +62,9 @@ const DynamicTableComp = props => {
                         case "emptyPass": 
                             tableActions.emptyPass = true;
                             break;
+                        case "authModule": 
+                            tableActions.authModule = true;
+                            break;
                         default:
                             render.push(<td key={`td_${id}_${key}`}>{val}</td>);
                     }
@@ -88,7 +92,8 @@ const DynamicTableComp = props => {
                     tableActions={tableActions} 
                     handleDelete={props.handleDelete} 
                     handleUpdate={props.handleUpdate} 
-                    handleEmptyPass={props.handleEmptyPass}                 
+                    handleEmptyPass={props.handleEmptyPass}
+                    handleAuthModule={props.handleAuthModule}
                 />
             );
         }

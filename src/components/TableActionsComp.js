@@ -1,7 +1,7 @@
 // Node Modules imports
 import React, { Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faUnlock, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faUnlock, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
@@ -32,6 +32,13 @@ const TableActionsComp = props => {
                     </Button>
                 </td>
             }
+            {(props.tableActions.authModule) &&                   
+                <td key={`td_authModule_${id}`}>
+                    <Button variant={theme.style.btnSuccess} onClick={ () => props.handleAuthModule(id)}>
+                        <FontAwesomeIcon icon={faUserPlus} size="lg" />
+                    </Button>
+                </td>
+            }            
         </Fragment>
     );
 };

@@ -11,6 +11,7 @@ import NotFound from '../layout/NotFound';
 import CrearUsuario from '../layout/CrearUsuario';
 import ConsultaUsuarios from '../layout/ConsultaUsuarios';
 import PermisosApp from '../layout/PermisosApp';
+import AsignaModulosPerm from '../layout/AsignaModulosPerm';
 
 const AppAdmin = () => {
     const { path } = useRouteMatch();
@@ -45,6 +46,13 @@ const AppAdmin = () => {
                 }
             >   
             </Route>  
+            <Route 
+                exact path={`${path}/${config.URL_ASIGNA_MODULOS_PERM}`}
+                render={() => (isAuth()) ?
+                    <AsignaModulosPerm /> : <NotFound />
+                }
+            >   
+            </Route>              
             <Route path="*">
                 <NotFound />
             </Route>                         

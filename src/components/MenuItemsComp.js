@@ -67,7 +67,7 @@ const MenuItemComp = props => {
                             <NavDropdown.Item id="CrearUsuario" as={Link} to={ROUTES.PATH_ADMIN_CREAR_USUARIO}> Crear Usuario</NavDropdown.Item>
                             <NavDropdown.Item id="ConsultaUsuarios" as={Link} to={ROUTES.PATH_ADMIN_CONSULTA_USUARIOS}> Consulta Usuarios </NavDropdown.Item>
                             <NavDropdown.Item id="PermisosApp" as={Link} to={ROUTES.PATH_ADMIN_PERMISOS_APP}> Permisos App </NavDropdown.Item>
-                            <NavDropdown.Item id="AsignarPermisos"> Asignar Permisos </NavDropdown.Item>
+                            <NavDropdown.Item id="AsignaModulosPerm" as={Link} to={ROUTES.PATH_ADMIN_ASIGNA_MODULOS_PERM}> Asigna Modulos Perm </NavDropdown.Item>
                             <NavDropdown.Item id="AppLogs"> App Logs </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>

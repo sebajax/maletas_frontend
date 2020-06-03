@@ -5,13 +5,15 @@ import HeaderReducer from './HeaderReducer';
 import ThemeReducer from './ThemeReducer';
 import QueryResultReducer from './QueryResultReducer';
 import PermisosReducer from './PermisosReducer';
+import AuthModulesReducer from './AuthModulesReducer';
 
 const appReducer = combineReducers({ 
     MontoTotalSimuladoReducer,
     HeaderReducer,
     ThemeReducer,
     QueryResultReducer,
-    PermisosReducer
+    PermisosReducer,
+    AuthModulesReducer
 });
 
 const rootReducer = (state, action) => {
