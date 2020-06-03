@@ -213,7 +213,7 @@ const PermisosApp = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        if(Validate.isDefined(result)) {
+        if(Validate.isDefined(result) && Validate.isArray(result)) {
             let body = result.map(element => {
                 return {
                     "id": element._id,
