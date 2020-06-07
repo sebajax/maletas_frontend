@@ -1,5 +1,5 @@
 // Node Modules imports
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Button, Alert, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -41,11 +41,12 @@ const Login = () => {
                 }
             });
             if(response.data.auth && response.data.token) {
-                cookies.set('jwtToken', response.data.token, { path: '/' });
+                cookies.set("jwtToken", response.data.token, { path: '/' });
                 sessionStorage.setItem("auth", response.data.auth);
                 sessionStorage.setItem("userId", response.data.userId);
                 sessionStorage.setItem("user", response.data.user);
                 sessionStorage.setItem("permType", response.data.permType);
+                sessionStorage.setItem("permId", response.data.permId);
                 dispatch(setTheme(response.data.appTheme));
                 dispatch(setValidateMessage());
                 history.push(ROUTES.PATH_HOME);
@@ -56,6 +57,12 @@ const Login = () => {
             dispatch(setValidateMessage(true, `${err} ${ERROR_ACCESO}`));
         } 
     };
+
+    useEffect(() => {
+        cookies.remove('jwtToken', '/');
+        sessionStorage.clear();
+        dispatch({type: 'USER_LOGGED_OUT'});
+    }, [dispatch]);
 
     return (
         <Fragment>

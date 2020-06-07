@@ -4,34 +4,25 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 // Config
 import config from '../config/Config';
-import { TOKEN } from '../config/ConfigToken';
 
 // COMPONENT-LAYOUT imports
+import PrivateRoute from '../components/PrivateRoute';
 import MenuPrincipal from '../layout/MenuPrincipal';
 import NotFound from '../layout/NotFound';
 
 const AppMenuPrincipal = () => {
     const { path } = useRouteMatch();
-
-    const isAuth = () => {
-        if(sessionStorage.getItem("auth") && TOKEN)
-            return true;
-        else   
-            return false;
-    };
-
+    
     return(
         <Switch>
-            <Route
-                exact path={`${path}/${config.URL_MENU_PRINCIPAL}`}
-                render={() => (isAuth()) ?
-                    <MenuPrincipal /> : <NotFound />
-                }
-            >
+            <PrivateRoute 
+                path={`${path}/${config.URL_MENU_PRINCIPAL}`} 
+                component={MenuPrincipal} 
+                module={path.toUpperCase()} 
+            />
+            <Route path="*"> 
+                <NotFound /> 
             </Route>
-            <Route path="*">
-                <NotFound />
-            </Route>                         
         </Switch>       
     );
 };

@@ -8,12 +8,12 @@ import { URL_API } from '../config/ConfigApi';
 import { SERVER_ERR_COM } from '../config/Messages';
 import API from '../config/API';
 import modules from '../config/Modules';
-//import { TOKEN } from '../config/ConfigToken';
 
 // REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 
 // COMPONENT-LAYOUT imports
+import PrivateRoute from '../components/PrivateRoute';
 import NotFound from '../layout/NotFound';
 
 // CSS
@@ -27,18 +27,8 @@ import AppSimulacion from './AppSimulacion';
 import AppAdmin from './AppAdmin';
 
 const App = () => {
-
     const dispatch = useDispatch();
-
-/*
-    const isAuth = () => {
-        if(sessionStorage.getItem("auth") && TOKEN)
-            return true;
-        else   
-            return false;
-    };
-*/
-
+  
     useEffect(() => {
         const checkApi = async () => { 
             try {
@@ -58,15 +48,21 @@ const App = () => {
                 <Route exact path='/'>
                     <AppLogin />
                 </Route>
-                <Route path={`/${modules.HOME}`}>
-                    <AppMenuPrincipal />
-                </Route>
-                <Route path={`/${modules.SIMULACION}`}>
-                    <AppSimulacion />
-                </Route>
-                <Route path={`/${modules.ADMIN}`}>
-                    <AppAdmin />
-                </Route>
+                <PrivateRoute 
+                    path={`/${modules.HOME}`} 
+                    component={AppMenuPrincipal} 
+                    module={`/${modules.HOME.toUpperCase()}`}
+                />
+                <PrivateRoute
+                    path={`/${modules.SIMULACION}`} 
+                    component={AppSimulacion} 
+                    module={`/${modules.SIMULACION.toUpperCase()}`} 
+                />
+                <PrivateRoute 
+                    path={`/${modules.ADMIN}`} 
+                    component={AppAdmin} 
+                    module={`/${modules.ADMIN.toUpperCase()}`} 
+                />
                 <Route path="*">
                     <NotFound />
                 </Route>                

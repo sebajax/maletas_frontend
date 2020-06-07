@@ -4,9 +4,9 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 // Config
 import config from '../config/Config';
-import { TOKEN } from '../config/ConfigToken';
 
 // COMPONENT-LAYOUT imports
+import PrivateRoute from '../components/PrivateRoute';
 import IngresoSimulado from '../layout/IngresoSimulado';
 import GastoSimulado from '../layout/GastoSimulado';
 import NotFound from '../layout/NotFound';
@@ -14,27 +14,18 @@ import NotFound from '../layout/NotFound';
 const AppSimulacion = () => {
     const { path } = useRouteMatch();
 
-    const isAuth = () => {
-        if(sessionStorage.getItem("auth") && TOKEN)
-            return true;
-        else   
-            return false;
-    };
-
     return(
         <Switch>
-            <Route 
-                exact path={`${path}/${config.URL_INGRESO_SIMULADO}`}
-                render={() => (isAuth()) ?
-                    <IngresoSimulado /> : <NotFound />}
-            >   
-            </Route>
-            <Route 
-                exact path={`${path}/${config.URL_GASTO_SIMULADO}`}
-                render={() => (isAuth()) ?
-                    <GastoSimulado /> : <NotFound />}
-            >   
-            </Route>
+            <PrivateRoute 
+                path={`${path}/${config.URL_INGRESO_SIMULADO}`}
+                component={IngresoSimulado} 
+                module={path.toUpperCase()} 
+            />
+            <PrivateRoute 
+                path={`${path}/${config.URL_GASTO_SIMULADO}`}
+                component={GastoSimulado} 
+                module={path.toUpperCase()} 
+            />            
             <Route path="*">
                 <NotFound />
             </Route>                 
