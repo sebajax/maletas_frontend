@@ -10,7 +10,7 @@ import Validate from 'validate.js';
 
 // Config
 import ROUTES from '../config/Routes';
-import { API_TOKEN, cookies } from '../config/ConfigToken';
+import { API_TOKEN } from '../config/ConfigToken';
 import API from '../config/API';
 import { SERVER_ERR_COM } from '../config/Messages';
 import { URL_API_UPDATE_THEME } from '../config/ConfigApiUsuarios';
@@ -35,7 +35,7 @@ const MenuItemComp = props => {
     const handleShow = () => setShow(true);
   
     const handleSignOut = () => {
-        cookies.remove('jwtToken', '/');
+        localStorage.clear();
         sessionStorage.clear();
         dispatch({type: 'USER_LOGGED_OUT'});
         history.push('/');

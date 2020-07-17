@@ -12,8 +12,8 @@ import API from '../config/API';
 import ROUTES from '../config/Routes';
 import { URL_API_LOGIN } from '../config/ConfigApi';
 import version from '../config/Version';
-import { cookies } from '../config/ConfigToken';
 import { ERROR_ACCESO } from '../config/Messages';
+import { API_TOKEN } from '../config/ConfigToken';
 
 // REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
@@ -41,12 +41,13 @@ const Login = () => {
                 }
             });
             if(response.data.auth && response.data.token) {
-                cookies.set("jwtToken", response.data.token, { path: '/' });
+                localStorage.setItem("jwtToken", response.data.token);
                 sessionStorage.setItem("auth", response.data.auth);
                 sessionStorage.setItem("userId", response.data.userId);
                 sessionStorage.setItem("user", response.data.user);
                 sessionStorage.setItem("permType", response.data.permType);
                 sessionStorage.setItem("permId", response.data.permId);
+                API_TOKEN.headers.Authorization += localStorage.getItem("jwtToken"); //seteo TOKEN
                 dispatch(setTheme(response.data.appTheme));
                 dispatch(setValidateMessage());
                 history.push(ROUTES.PATH_HOME);
@@ -59,7 +60,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        cookies.remove('jwtToken', '/');
+        localStorage.clear();
         sessionStorage.clear();
         dispatch({type: 'USER_LOGGED_OUT'});
     }, [dispatch]);
@@ -101,7 +102,7 @@ const Login = () => {
                             {errors.password && <ErrorMessage message={"Debe ingresar un password."} />}
                         </Form.Group>
                         <hr />
-                        <Button className="mt-4" size="lg" variant="primary" type="submit" block>Confirmar</Button>
+                        <Button className="mt-4" size="lg" variant="primary" type="submit" block>Ingresar</Button>
                     </Form>
                     <br />
                 </Alert>
