@@ -17,6 +17,7 @@ const useIsAuth = module => {
             try {
                 if(Validate.isDefined(module) && !Validate.isEmpty(module)) {
                     if(sessionStorage.getItem("auth") && localStorage.getItem("jwtToken") && sessionStorage.getItem("permId")) {
+                        API_TOKEN.headers.Authorization = `Bearer ${localStorage.getItem("jwtToken")}` //seteo token
                         const resIsAuth = await API.get(`${URL_API_IS_AUTH}${sessionStorage.getItem("permId")}${module}`, API_TOKEN);
                         if(Validate.isDefined(resIsAuth.data)) {
                             setAuth(resIsAuth.data);

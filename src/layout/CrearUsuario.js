@@ -1,8 +1,9 @@
 // Node Modules imports
 import React, { Fragment } from 'react';
 import { Container, Form, Col, Row } from 'react-bootstrap';
-import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from 'react-redux';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 // Config
 import API from '../config/API';
@@ -14,51 +15,25 @@ import { URL_API_SAVE_USUARIO } from '../config/ConfigApiUsuarios';
 import HeaderComp from '../components/HeaderComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
-import ErrorMessage from '../components/ErrorMessage';
 import SelectPermComp from '../components/SelectPermComp';
 
 // REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
 
+// Validation Form Schema
+const schemaCrearUsuario = Yup.object().shape({
+    usuario: Yup.string()
+        .required('Debe ingresar un usuario valido.'),
+    nombre: Yup.string()
+        .required('Debe ingresar un nombre valido.'),
+    permisos_app: Yup.string()
+        .required('Debe seleccionar un tipo de permiso.')
+});
+
 const CrearUsuario = () => {
     const dispatch = useDispatch();
     let title = "Crear Usuario";
     let navItems = ["Admin", title];
-
-    const { register, handleSubmit, errors, reset, control, setValue } = useForm({
-        mode: 'onChange',
-    });
-
-    const onSubmit = async (data, e) => {
-        e.preventDefault();
-        let req = {};
-
-        if(data) {
-            req = {
-                "user": data.usuario,
-                "password": data.usuario,
-                "name": data.nombre,
-                "config": {
-                    "permId": data.permisos_app,
-                    "appTheme": true
-                }  
-            };
-        }else {
-            dispatch(setValidateMessage(true, ERROR_SOLICITUD));
-            return;
-        }
-
-        try {
-            await API.post(URL_API_SAVE_USUARIO, req, API_TOKEN);
-            e.target.reset();
-            setValue("permisos_app", "");
-            dispatch(setValidateMessage(true, `Usuario: ${data.usuario} creado con exito!`, SUCCESS));
-        }catch(err) {    
-            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
-        };        
-    };
-
-    const handleChangePerm = (value) => setValue("permisos_app", value, true);
 
     return (
         <Fragment>
@@ -68,45 +43,92 @@ const CrearUsuario = () => {
                     navItems={navItems} 
                     title={title}                    
                 />
-                <Form noValidate onSubmit={handleSubmit(onSubmit)}>
-                    <Form.Group as={Row} controlId="usuario">
-                        <Form.Label column sm={2}>Usuario</Form.Label>
-                        <Col sm={6}>
-                            <Form.Control 
-                                name="usuario" 
-                                type="text" 
-                                placeholder="Usuario" 
-                                ref={register({ required: true })} 
-                            />
-                            {errors.usuario && <ErrorMessage message={"Debe ingresar un usuario valido."} />}
-                        </Col>
-                    </Form.Group>     
-                    <Form.Group as={Row} controlId="nombre">
-                        <Form.Label column sm={2}>Nombre</Form.Label>
-                        <Col sm={6}>
-                            <Form.Control 
-                                name="nombre" 
-                                type="text" 
-                                placeholder="Nombre" 
-                                ref={register({ required: true })} 
-                            />
-                            {errors.nombre && <ErrorMessage message={"Debe ingresar un nombre valido."} />}
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="permisos_app">
-                        <Form.Label column sm={2}>Permisos App</Form.Label>
-                        <Col sm={6}>
-                            <Controller
-                                as={<SelectPermComp handleChangePerm={handleChangePerm} />}
-                                control={control}
-                                name="permisos_app"
-                                rules={{ required: true }}
-                            />
-                            {errors.permisos_app && <ErrorMessage message={"Debe seleccionar un tipo de permiso."} />}
-                        </Col>
-                    </Form.Group>                                         
-                    <FormButtonsComp reset={reset} />
-                </Form>
+
+                <Formik
+                    validationSchema={schemaCrearUsuario}
+                    initialValues={{
+                        usuario: '',
+                        nombre: '',
+                        permisos_app: ''
+                    }}
+                    onSubmit={async values => {
+                        console.log(values);
+                        let req = {};
+                        if(values) {
+                            req = {
+                                "user": values.usuario,
+                                "password": values.usuario,
+                                "name": values.nombre,
+                                "config": {
+                                    "permId": values.permisos_app,
+                                    "appTheme": true
+                                }  
+                            };
+                        }else {
+                            dispatch(setValidateMessage(true, ERROR_SOLICITUD));
+                            return;
+                        }
+
+                        try {
+                            await API.post(URL_API_SAVE_USUARIO, req, API_TOKEN);
+                            dispatch(setValidateMessage(true, `Usuario: ${values.usuario} creado con exito!`, SUCCESS));
+                        }catch(err) {    
+                            dispatch(setValidateMessage(true, `${err} ${ERROR_SOLICITUD}`));
+                        };  
+                    }}
+                >
+                {({ touched, errors, values, handleChange, handleSubmit, handleBlur, handleReset }) => (
+                    <Form noValidate onSubmit={handleSubmit}>
+                        <Form.Group as={Row} controlId="usuario">
+                            <Form.Label column sm={2}>Usuario</Form.Label>
+                            <Col sm={6}>
+                                <Form.Control 
+                                    name="usuario" 
+                                    type="text" 
+                                    placeholder="Usuario"
+                                    value={values.usuario}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    isInvalid={touched.usuario && errors.usuario}
+                                    isValid={touched.usuario && !errors.usuario}                                 
+                                />
+                                <Form.Control.Feedback type="invalid"> {errors.usuario} </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>     
+                        <Form.Group as={Row} controlId="nombre">
+                            <Form.Label column sm={2}>Nombre</Form.Label>
+                            <Col sm={6}>
+                                <Form.Control 
+                                    name="nombre" 
+                                    type="text" 
+                                    placeholder="Nombre" 
+                                    value={values.nombre}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    isInvalid={touched.nombre && errors.nombre}
+                                    isValid={touched.nombre && !errors.nombre}                                       
+                                />
+                                <Form.Control.Feedback type="invalid"> {errors.nombre} </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="permisos_app">
+                            <Form.Label column sm={2}>Permisos App</Form.Label>
+                            <Col sm={6}>
+                                <SelectPermComp 
+                                    name="permisos_app"
+                                    value={values.permisos_app}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    isInvalid={touched.permisos_app && errors.permisos_app}
+                                    isValid={touched.permisos_app && !errors.permisos_app}
+                                />
+                                <Form.Control.Feedback type="invalid"> {errors.permisos_app} </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
+                        <FormButtonsComp reset={handleReset} />
+                    </Form>
+                )}
+                </Formik>
             </Container>
         </Fragment>
     );

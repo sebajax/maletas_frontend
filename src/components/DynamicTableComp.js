@@ -7,7 +7,6 @@ import { faCheckCircle, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from "react-hook-form";
 
 // COMPONENT imports
-import ErrorMessage from '../components/ErrorMessage';
 import TableActionsComp from '../components/TableActionsComp';
 
 const DynamicTableComp = props => {
@@ -46,7 +45,7 @@ const DynamicTableComp = props => {
                                     defaultValue={val}
                                     ref={register({ required: true })} 
                                 />
-                                {errors[name] && <ErrorMessage message={`${key} no puede ser vacio`} />}
+                                {errors[name] && <span message={`${key} no puede ser vacio`} />}
                             </td>
                         );
                         elements--;

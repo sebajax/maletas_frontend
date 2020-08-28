@@ -33,9 +33,13 @@ const SelectPermComp = props => {
 
     return (
         <Form.Control 
-            name="permisos_app"
-            as="select" 
-            onChange={e => props.handleChangePerm(e.target.value)}
+            as="select"
+            name={props.name}
+            value={props.value}
+            onChange={props.onChange}
+            onBlur={props.onBlur}
+            isInvalid={props.isInvalid}
+            isValid={props.isValid}
             custom
         >
             <option value="">-Seleccione Permiso-</option>

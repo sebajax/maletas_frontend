@@ -17,7 +17,6 @@ import MontoTotalSimuladoComp from '../components/MontoTotalSimuladoComp';
 import DatePickerComp from '../components/DatePickerComp';
 import MenuItemComp from '../components/MenuItemsComp';
 import FormButtonsComp from '../components/FormButtonsComp';
-import ErrorMessage from '../components/ErrorMessage';
 
 // REDUX Actions imports
 import { setMontoTotalSimulado } from '../redux/actions/MontoTotalSimuladoActions';
@@ -76,7 +75,7 @@ const IngresoSimulado = () => {
                                 control={control}
                                 as={<DatePickerComp startDate={startDate} handleChange={handleChange}  />}        
                             />
-                            {errors.fecha && <ErrorMessage message={"Debe ingresar una fecha valida."} />}
+                            {errors.fecha && <span message={"Debe ingresar una fecha valida."} />}
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="categoria">
@@ -88,7 +87,7 @@ const IngresoSimulado = () => {
                                 placeholder="Categoria de ingreso" 
                                 ref={register({ required: true })} 
                             />
-                            {errors.categoria && <ErrorMessage message={"Debe ingresar una categoria valida."} />}
+                            {errors.categoria && <span message={"Debe ingresar una categoria valida."} />}
                         </Col>
                     </Form.Group>                       
                     <Form.Group as={Row} controlId="monto">
@@ -110,7 +109,7 @@ const IngresoSimulado = () => {
                                     })} 
                                 />
                             </InputGroup>
-                            {errors.monto && <ErrorMessage message={"Debe ingresar un monto valida."} />}
+                            {errors.monto && <span message={"Debe ingresar un monto valida."} />}
                         </Col>
                     </Form.Group>    
                     <FormButtonsComp reset={reset} />

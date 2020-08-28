@@ -1,11 +1,12 @@
 // Node Modules imports
-import React, {Fragment, useEffect} from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Container, Form, Button, Alert, Navbar } from 'react-bootstrap';
+import { Form, Button, Navbar } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLuggageCart, faSuitcaseRolling, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 // Config
 import API from '../config/API';
@@ -13,7 +14,6 @@ import ROUTES from '../config/Routes';
 import { URL_API_LOGIN } from '../config/ConfigApi';
 import version from '../config/Version';
 import { ERROR_ACCESO } from '../config/Messages';
-import { API_TOKEN } from '../config/ConfigToken';
 
 // REDUX Actions imports
 import { setValidateMessage } from '../redux/actions/HeaderActions';
@@ -21,43 +21,18 @@ import { setTheme } from '../redux/actions/ThemeActions';
 
 // COMPONENT imports
 import HeaderComp from '../components/HeaderComp';
-import ErrorMessage from '../components/ErrorMessage';
+
+// Validation Form Schema
+const schemaLogin = Yup.object().shape({
+    usuario: Yup.string()
+        .required('Debe ingresar un Usuario.'),
+    password: Yup.string()
+        .required('Debe ingresar un Password.')
+});
 
 const Login = () => {
     const dispatch = useDispatch();
     const history = useHistory();
-
-    const { register, handleSubmit, errors } = useForm({
-        mode: 'onChange',
-    });
-
-    const onSubmit = async (data, e) => {
-        e.preventDefault();
-        try {
-            const response = await API.get(URL_API_LOGIN, {
-                auth: {
-                    username: data.usuario,
-                    password: data.password
-                }
-            });
-            if(response.data.auth && response.data.token) {
-                localStorage.setItem("jwtToken", response.data.token);
-                sessionStorage.setItem("auth", response.data.auth);
-                sessionStorage.setItem("userId", response.data.userId);
-                sessionStorage.setItem("user", response.data.user);
-                sessionStorage.setItem("permType", response.data.permType);
-                sessionStorage.setItem("permId", response.data.permId);
-                API_TOKEN.headers.Authorization += localStorage.getItem("jwtToken"); //seteo TOKEN
-                dispatch(setTheme(response.data.appTheme));
-                dispatch(setValidateMessage());
-                history.push(ROUTES.PATH_HOME);
-            }else {
-                dispatch(setValidateMessage(true, ERROR_ACCESO));
-            }
-        }catch(err) {
-            dispatch(setValidateMessage(true, `${err} ${ERROR_ACCESO}`));
-        } 
-    };
 
     useEffect(() => {
         localStorage.clear();
@@ -67,47 +42,93 @@ const Login = () => {
 
     return (
         <Fragment>
+            
             <Navbar className="justify-content-between" bg="dark" expand="md" variant="dark">
                 <Navbar.Brand className="text-primary">
                     <FontAwesomeIcon icon={faSuitcaseRolling} size="2x" />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            </Navbar>        
-            <Container id="container" className="my-5 w-75">
-                <HeaderComp />
-                <Alert variant="dark">
-                    <div className="d-flex justify-content-center text-primary" style={{paddingTop: "30px", fontSize: "34px"}}>
-                        <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faUser} size="3x" /></span> 
-                    </div>                
-                    <Form className="mt-3" onSubmit={handleSubmit(onSubmit)}>
-                        <Form.Group controlId="loginUser">
-                            <Form.Control 
-                                name="usuario"
-                                size="lg" 
-                                type="text" 
-                                placeholder="Usuario" 
-                                ref={register({ required: true })} 
-                            />
-                            {errors.usuario && <ErrorMessage message={"Debe ingresar un usuario."} />}
-                        </Form.Group>
-                        <Form.Group controlId="loginPassword">
-                            <Form.Control 
-                                name="password"
-                                size="lg" 
-                                type="password" 
-                                placeholder="Password" 
-                                autoComplete="on" 
-                                ref={register({ required: true })} 
-                            />
-                            {errors.password && <ErrorMessage message={"Debe ingresar un password."} />}
-                        </Form.Group>
-                        <hr />
-                        <Button className="mt-4" size="lg" variant="primary" type="submit" block>Ingresar</Button>
-                    </Form>
-                    <br />
-                </Alert>
-            </Container>
-            <div className="d-flex justify-content-center text-primary">
+            </Navbar>    
+
+            <div className="login-continer mt-5 p-2">
+                <div className="login shadow rounded p-5">
+                    <div className="d-flex justify-content-center text-primary" style={{fontSize: "34px"}}>
+                        <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faUser} size="2x" /></span> 
+                    </div>
+                    <HeaderComp />
+                    <Formik
+                        validationSchema={schemaLogin}
+                        initialValues={{
+                            usuario: '',
+                            password: '',
+                        }}
+                        onSubmit={async values => { 
+                            try {
+                                const response = await API.get(URL_API_LOGIN, {
+                                    auth: {
+                                        username: values.usuario,
+                                        password: values.password
+                                    }
+                                });
+                                if(response.data.auth && response.data.token) {
+                                    localStorage.setItem("jwtToken", response.data.token);
+                                    sessionStorage.setItem("auth", response.data.auth);
+                                    sessionStorage.setItem("userId", response.data.userId);
+                                    sessionStorage.setItem("user", response.data.user);
+                                    sessionStorage.setItem("permType", response.data.permType);
+                                    sessionStorage.setItem("permId", response.data.permId);
+                                    dispatch(setTheme(response.data.appTheme));
+                                    dispatch(setValidateMessage());
+                                    history.push(ROUTES.PATH_HOME);
+                                }else {
+                                    dispatch(setValidateMessage(true, ERROR_ACCESO));
+                                }
+                            }catch(err) {
+                                dispatch(setValidateMessage(true, ERROR_ACCESO));
+                            }                             
+                        }}
+                    >
+                    {({ touched, errors, values, handleChange, handleSubmit, handleBlur }) => (
+                        <Form noValidate className="mt-3" onSubmit={handleSubmit}>
+                            
+                            <Form.Group controlId="loginUser">
+                                <Form.Control
+                                    name="usuario"
+                                    type="text" 
+                                    value={values.usuario}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    placeholder="Usuario" 
+                                    isInvalid={touched.usuario && errors.usuario}
+                                    isValid={touched.usuario && !errors.usuario}
+                                />
+                                <Form.Control.Feedback type="invalid"> {errors.usuario} </Form.Control.Feedback>
+                            </Form.Group>
+
+                            <Form.Group controlId="loginPassword">
+                                <Form.Control
+                                    name="password"
+                                    type="password"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    placeholder="Password" 
+                                    isInvalid={touched.password && errors.password}
+                                    isValid={touched.password && !errors.password}
+                                    autoComplete="on" 
+                                />
+                                <Form.Control.Feedback type="invalid"> {errors.password} </Form.Control.Feedback>
+                            </Form.Group>
+
+                            <Button className="mt-4" size="lg" variant="primary" type="submit" block>Ingresar</Button>
+                        
+                        </Form>
+                    )}
+                    </Formik>
+
+                </div>
+            </div>
+            <div className="d-flex justify-content-center text-primary mt-5">
                 <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faLuggageCart} size="3x" /></span> 
             </div>
             <div className="d-flex justify-content-center text-primary">

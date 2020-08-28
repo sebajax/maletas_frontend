@@ -5,9 +5,6 @@ import { useSelector } from 'react-redux';
 import { Button, Form, Alert, Col } from 'react-bootstrap';
 import { useForm } from "react-hook-form";
 
-// COMPONENT imports
-import ErrorMessage from '../components/ErrorMessage';
-
 const SavePermisoComp = props => {
     const theme = useSelector(state => state.ThemeReducer);
 
@@ -34,7 +31,7 @@ const SavePermisoComp = props => {
                             placeholder="Agregar Permiso" 
                             ref={register({ required: true })} 
                         />
-                        {errors.permType && <ErrorMessage message={"Debe ingresar un permiso valido."} />}
+                        {errors.permType && <span message={"Debe ingresar un permiso valido."} />}
                     </Form.Group>                    
             </Modal.Body>
             <Modal.Footer className="w-100">
