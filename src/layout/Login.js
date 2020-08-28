@@ -50,7 +50,7 @@ const Login = () => {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
             </Navbar>    
 
-            <div className="login-continer mt-5 p-2">
+            <div className="login-container mt-5 p-2">
                 <div className="login shadow rounded p-5">
                     <div className="d-flex justify-content-center text-primary" style={{fontSize: "34px"}}>
                         <span style={{opacity: "0.1"}}><FontAwesomeIcon icon={faUser} size="2x" /></span> 
